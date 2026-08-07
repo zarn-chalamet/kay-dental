@@ -1,0 +1,19 @@
+import { Outlet } from 'react-router-dom';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import FloatingButtons from '@/components/FloatingButtons';
+
+export default function PublicLayout() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
+      <FloatingButtons />
+      {/* Spacer for mobile bottom bar */}
+      <div className="h-14 md:hidden" />
+    </div>
+  );
+}

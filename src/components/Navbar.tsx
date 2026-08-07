@@ -1,0 +1,157 @@
+import { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Phone, Calendar, Globe } from 'lucide-react';
+import { useLanguageStore } from '@/store/useLanguageStore';
+import { getClinicStatus } from '@/utils/clinicStatus';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const navLinks = [
+  { path: '/', labelEn: 'Home', labelMm: 'ပင်မစာမျက်နှာ' },
+  { path: '/about', labelEn: 'About', labelMm: 'အကြောင်း' },
+  { path: '/services', labelEn: 'Services', labelMm: 'ဝန်ဆောင်မှုများ' },
+  { path: '/doctors', labelEn: 'Doctors', labelMm: 'ဆရာဝန်များ' },
+  { path: '/gallery', labelEn: 'Gallery', labelMm: 'ဓာတ်ပုံများ' },
+  { path: '/pricing', labelEn: 'Pricing', labelMm: 'စျေးနှုန်းများ' },
+  { path: '/contact', labelEn: 'Contact', labelMm: 'ဆက်သွယ်ရန်' },
+];
+
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+  const { language, toggleLanguage, t } = useLanguageStore();
+  const clinicStatus = getClinicStatus();
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
+
+  const statusColor = clinicStatus.status === 'OPEN' ? 'bg-green-500' : clinicStatus.status === 'HOLIDAY' ? 'bg-orange-500' : 'bg-red-500';
+
+  return (
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/95 backdrop-blur-md shadow-lg' : 'bg-white/80 backdrop-blur-sm'}`}>
+      <div className="container-custom">
+        <div className="flex items-center justify-between h-16 md:h-20">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 rounded-xl gradient-green flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
+              K
+            </div>
+            <div className="hidden sm:block">
+              <div className="font-bold text-primary-700 text-lg leading-tight">KAY Dental</div>
+              <div className="text-[10px] text-gray-500 leading-tight">{t('Professional Dental Care', 'ပရော်ဖက်ရှင်နယ် သွားကုသမှု')}</div>
+            </div>
+          </Link>
+
+          {/* Desktop Nav */}
+          <div className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  location.pathname === link.path
+                    ? 'text-primary-700 bg-primary-50'
+                    : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                }`}
+              >
+                {t(link.labelEn, link.labelMm)}
+              </Link>
+            ))}
+          </div>
+
+          {/* Right side */}
+          <div className="flex items-center gap-2 md:gap-3">
+            {/* Clinic Status Badge */}
+            <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100">
+              <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse`} />
+              <span className="text-xs font-medium text-gray-600">
+                {t(clinicStatus.message, clinicStatus.messageMm)}
+              </span>
+            </div>
+
+            {/* Language Toggle */}
+            <button
+              onClick={toggleLanguage}
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all text-xs font-medium"
+            >
+              <Globe className="w-3.5 h-3.5" />
+              {language === 'en' ? 'MM' : 'EN'}
+            </button>
+
+            {/* Phone */}
+            <a href="tel:095158726" className="hidden md:flex items-center gap-1 text-primary-600 hover:text-primary-700 transition-colors">
+              <Phone className="w-4 h-4" />
+              <span className="text-sm font-medium">09 5158726</span>
+            </a>
+
+            {/* Book CTA */}
+            <Link
+              to="/appointment"
+              className="hidden sm:flex items-center gap-1.5 btn-primary !py-2 !px-4 !text-sm"
+            >
+              <Calendar className="w-4 h-4" />
+              {t('Book Now', 'ချိန်းဆိုရန်')}
+            </Link>
+
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden bg-white border-t border-gray-100 shadow-lg"
+          >
+            <div className="container-custom py-4 space-y-1">
+              {/* Clinic status mobile */}
+              <div className="flex items-center gap-2 px-3 py-2 mb-2">
+                <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse`} />
+                <span className="text-sm text-gray-600">{t(clinicStatus.message, clinicStatus.messageMm)}</span>
+              </div>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                    location.pathname === link.path
+                      ? 'text-primary-700 bg-primary-50'
+                      : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                  }`}
+                >
+                  {t(link.labelEn, link.labelMm)}
+                </Link>
+              ))}
+              <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
+                <a href="tel:095158726" className="flex items-center gap-2 px-3 py-2.5 text-primary-600 font-medium text-sm">
+                  <Phone className="w-4 h-4" /> 09 5158726
+                </a>
+                <Link to="/appointment" className="btn-primary text-center !text-sm">
+                  <Calendar className="w-4 h-4 inline mr-1" />
+                  {t('Book Appointment', 'ချိန်းဆိုရန်')}
+                </Link>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+}
