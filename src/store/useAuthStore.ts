@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { authApi } from '@/api/authApi';
 
 interface AuthState {
   isAuthenticated: boolean;
-  user: { username: string; role: string } | null;
+  user: { id: number; username: string; role: string } | null;
   token: string | null;
-  login: (username: string, password: string) => boolean;
-  logout: () => void;
+  refreshToken: string | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -15,18 +17,46 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       user: null,
       token: null,
-      login: (username: string, password: string) => {
-        if (username === 'admin' && password === 'admin123') {
-          set({
-            isAuthenticated: true,
-            user: { username: 'admin', role: 'ADMIN' },
-            token: 'mock-jwt-token-' + Date.now(),
-          });
-          return true;
+      refreshToken: null,
+      
+      login: async (username: string, password: string) => {
+        try {
+          const response = await authApi.login({ username, password });
+          
+          if (response.success && response.data) {
+            // Save token for axios interceptor
+            localStorage.setItem('kay-dental-token', response.data.accessToken);
+            
+            set({
+              isAuthenticated: true,
+              user: response.data.user,
+              token: response.data.accessToken,
+              refreshToken: response.data.refreshToken,
+            });
+            return true;
+          }
+          return false;
+        } catch (error) {
+          console.error('Login failed:', error);
+          return false;
         }
-        return false;
       },
-      logout: () => set({ isAuthenticated: false, user: null, token: null }),
+      
+      logout: async () => {
+        try {
+          await authApi.logout();
+        } catch (error) {
+          console.error('Logout error:', error);
+        } finally {
+          localStorage.removeItem('kay-dental-token');
+          set({ 
+            isAuthenticated: false, 
+            user: null, 
+            token: null,
+            refreshToken: null 
+          });
+        }
+      },
     }),
     { name: 'kay-dental-auth' }
   )

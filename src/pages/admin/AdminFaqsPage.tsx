@@ -1,11 +1,16 @@
 import AdminGenericPage from './AdminGenericPage';
-import { mockFaqs } from '@/data/mockData';
+import { useAdminFaqs } from '@/hooks/useAdminData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AdminFaqsPage() {
+  const { data: faqs = [], isLoading } = useAdminFaqs();
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <AdminGenericPage
       title="FAQs"
-      data={mockFaqs as unknown as Record<string, unknown>[]}
+      data={faqs as unknown as Record<string, unknown>[]}
       columns={[
         { key: 'questionEn', label: 'Question', render: (item) => (
           <span className="line-clamp-1 max-w-xs">{String(item.questionEn)}</span>

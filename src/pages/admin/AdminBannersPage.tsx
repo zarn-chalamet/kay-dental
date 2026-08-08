@@ -1,11 +1,18 @@
 import AdminGenericPage from './AdminGenericPage';
-import { mockBanners } from '@/data/mockData';
+import { useAdminBanners } from '@/hooks/useAdminData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AdminBannersPage() {
+  const { data: bannersData, isLoading } = useAdminBanners();
+
+  if (isLoading) return <LoadingSpinner />;
+
+  const banners = bannersData?.content || [];
+
   return (
     <AdminGenericPage
       title="Banners"
-      data={mockBanners as unknown as Record<string, unknown>[]}
+      data={banners as unknown as Record<string, unknown>[]}
       columns={[
         { key: 'titleEn', label: 'Title' },
         { key: 'type', label: 'Type', render: (item) => (

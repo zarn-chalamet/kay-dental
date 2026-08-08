@@ -13,7 +13,14 @@ import {
   Scissors, AlignCenter, Baby, Crown, Pin
 } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockBanners, mockDoctors, mockServices, mockTestimonials, mockFaqs } from '@/data/mockData';
+import { 
+  useBanners, 
+  useDoctors, 
+  useServices, 
+  useTestimonials, 
+  useFaqs 
+} from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { CLINIC_INFO } from '@/constants/clinicInfo';
 import { formatPrice } from '@/utils/clinicStatus';
 import SectionTitle from '@/components/SectionTitle';
@@ -71,6 +78,16 @@ function AnimatedCounter({ target, suffix = '' }: { target: number; suffix?: str
 export default function HomePage() {
   const { t } = useLanguageStore();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { data: banners = [], isLoading: bannersLoading } = useBanners();
+  const { data: doctors = [], isLoading: doctorsLoading } = useDoctors();
+  const { data: services = [], isLoading: servicesLoading } = useServices();
+  const { data: testimonials = [] } = useTestimonials();
+  const { data: faqs = [] } = useFaqs();
+  
+
+  if (bannersLoading || doctorsLoading || servicesLoading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div>
@@ -84,7 +101,7 @@ export default function HomePage() {
           loop
           className="w-full h-[500px] md:h-[600px]"
         >
-          {mockBanners.map((banner) => (
+          {banners.map((banner) => (
             <SwiperSlide key={banner.id}>
               <div className="relative w-full h-full">
                 <img
@@ -203,7 +220,7 @@ export default function HomePage() {
             subtitle={t('Comprehensive dental care for the whole family', 'မိသားစုတစ်ခုလုံးအတွက် ပြည့်စုံသော သွားကုသမှု')}
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {mockServices.slice(0, 8).map((service, i) => (
+            {services.slice(0, 8).map((service, i) => (
               <motion.div
                 key={service.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -303,7 +320,7 @@ export default function HomePage() {
             subtitle={t('Experienced and caring dental professionals', 'အတွေ့အကြုံရှိပြီး ဂရုစိုက်သော သွားကုသမှု ပညာရှင်များ')}
           />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {mockDoctors.map((doctor, i) => (
+            {doctors.map((doctor, i) => (
               <motion.div
                 key={doctor.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -361,7 +378,7 @@ export default function HomePage() {
               1024: { slidesPerView: 3 },
             }}
           >
-            {mockTestimonials.map((testimonial) => (
+            {testimonials.map((testimonial) => (
               <SwiperSlide key={testimonial.id}>
                 <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 h-full">
                   <div className="flex items-center gap-1 mb-3">
@@ -493,7 +510,7 @@ export default function HomePage() {
             subtitle={t('Find answers to common questions', 'အဖြေများကို ရှာဖွေပါ')}
           />
           <div className="max-w-3xl mx-auto space-y-3">
-            {mockFaqs.slice(0, 5).map((faq) => (
+            {faqs.slice(0, 5).map((faq) => (
               <motion.div
                 key={faq.id}
                 initial={{ opacity: 0, y: 10 }}

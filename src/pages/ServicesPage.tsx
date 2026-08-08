@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Stethoscope, Sparkles, Shield, Heart, Scissors, Crown, AlignCenter, Pin, Baby, AlertTriangle, Clock, ArrowRight } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockServices } from '@/data/mockData';
+import { useServices } from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorMessage from '@/components/ErrorMessage';
 import { formatPrice } from '@/utils/clinicStatus';
 
 
@@ -34,7 +36,14 @@ export default function ServicesPage() {
   const { t } = useLanguageStore();
   const [activeCategory, setActiveCategory] = useState('ALL');
 
-  const filtered = activeCategory === 'ALL' ? mockServices : mockServices.filter(s => s.category === activeCategory);
+  const { data: services = [], isLoading, error } = useServices();
+
+  if (isLoading) return <LoadingSpinner />;
+  if (error) return <ErrorMessage message="Failed to load services" />;
+
+  const filtered = activeCategory === 'ALL' 
+    ? services 
+    : services.filter(s => s.category === activeCategory);
 
   return (
     <div className="pt-20">

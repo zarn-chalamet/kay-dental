@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Clock, CheckCircle, XCircle, AlertCircle, Search, Filter } from 'lucide-react';
-import { mockAppointments, mockServices, mockDoctors } from '@/data/mockData';
+import { useAdminAppointments, useAdminDoctors, useAdminServices } from '@/hooks/useAdminData';
 import type { Appointment } from '@/types';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const statusBg: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-700',
@@ -23,9 +24,21 @@ export default function AdminAppointmentsPage() {
   const [filterStatus, setFilterStatus] = useState<string>('ALL');
   const [search, setSearch] = useState('');
 
-  const filtered = mockAppointments
-    .filter((a: Appointment) => filterStatus === 'ALL' || a.status === filterStatus)
-    .filter((a: Appointment) => !search || a.patientName.toLowerCase().includes(search.toLowerCase()) || a.patientPhone.includes(search));
+  const { data: appointmentsData, isLoading } = useAdminAppointments({ size: 100 });
+  const { data: services = [] } = useAdminServices();
+  const { data: doctors = [] } = useAdminDoctors();
+
+  if (isLoading) return <LoadingSpinner />;
+
+  const appointments: Appointment[] = appointmentsData?.content || [];
+
+  const filtered = appointments
+    .filter((a) => filterStatus === 'ALL' || a.status === filterStatus)
+    .filter((a) => 
+      !search || 
+      a.patientName.toLowerCase().includes(search.toLowerCase()) || 
+      a.patientPhone.includes(search)
+    );
 
   return (
     <div>
@@ -56,7 +69,7 @@ export default function AdminAppointmentsPage() {
             }`}
           >
             <Filter className="w-3 h-3 inline mr-1" />
-            {status.replace('_', ' ')} {status !== 'ALL' && `(${mockAppointments.filter(a => a.status === status).length})`}
+            {status.replace('_', ' ')} {status !== 'ALL' && `(${appointments.filter(a => a.status === status).length})`}
           </button>
         ))}
       </div>
@@ -76,8 +89,8 @@ export default function AdminAppointmentsPage() {
             </thead>
             <tbody>
               {filtered.map((appt) => {
-                const service = mockServices.find(s => s.id === appt.serviceId);
-                const doctor = mockDoctors.find(d => d.id === appt.doctorId);
+                const service = services.find(s => s.id === appt.serviceId);
+                const doctor = doctors.find(d => d.id === appt.doctorId);
                 return (
                   <tr key={appt.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">

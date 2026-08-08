@@ -2,12 +2,16 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Info } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockServices } from '@/data/mockData';
+import { useServices } from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { PAYMENT_METHODS } from '@/constants/clinicInfo';
 import { formatPrice } from '@/utils/clinicStatus';
 
 export default function PricingPage() {
   const { t } = useLanguageStore();
+  const { data: services = [], isLoading } = useServices();
+
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="pt-20">
@@ -44,7 +48,7 @@ export default function PricingPage() {
                 </tr>
               </thead>
               <tbody>
-                {mockServices.map((service, i) => (
+                {services.map((service, i) => (
                   <motion.tr
                     key={service.id}
                     initial={{ opacity: 0, x: -10 }}

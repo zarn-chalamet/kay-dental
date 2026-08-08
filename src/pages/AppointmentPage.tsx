@@ -2,8 +2,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight, ArrowLeft, CheckCircle, User, Phone, Mail, FileText, Clock } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockServices, mockDoctors } from '@/data/mockData';
+import { useServices, useDoctors } from '@/hooks/usePublicData';
 import { formatPrice } from '@/utils/clinicStatus';
+import { appointmentApi } from '@/api/publicApi';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
@@ -24,6 +26,7 @@ export default function AppointmentPage() {
   const { t } = useLanguageStore();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [form, setForm] = useState({
     serviceId: 0,
     doctorId: 0,
@@ -36,30 +39,58 @@ export default function AppointmentPage() {
     notes: '',
   });
 
-  const selectedService = mockServices.find(s => s.id === form.serviceId);
-  const selectedDoctor = mockDoctors.find(d => d.id === form.doctorId);
+  // Fetch services and doctors from API
+  const { data: services = [], isLoading: servicesLoading } = useServices();
+  const { data: doctors = [], isLoading: doctorsLoading } = useDoctors();
+
+  const selectedService = services.find(s => s.id === form.serviceId);
+  const selectedDoctor = doctors.find(d => d.id === form.doctorId);
 
   const canNext = () => {
     switch (currentStep) {
       case 1: return form.serviceId > 0;
-      case 2: return true; // doctor optional
+      case 2: return true;
       case 3: return form.date && form.time;
       case 4: return form.patientName && form.patientPhone;
       default: return true;
     }
   };
 
-  const handleSubmit = () => {
-    setIsSubmitted(true);
-    toast.success(t('Appointment booked successfully!', 'ချိန်းဆိုမှု အောင်မြင်စွာ ချိန်းဆိုပြီးပါပြီ!'));
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      await appointmentApi.create({
+        patientName: form.patientName,
+        patientPhone: form.patientPhone,
+        patientEmail: form.patientEmail || undefined,
+        serviceId: form.serviceId,
+        doctorId: form.doctorId || undefined,
+        appointmentDate: form.date,
+        appointmentTime: form.time,
+        isNewPatient: form.isNewPatient,
+        notes: form.notes || undefined,
+      });
+      
+      setIsSubmitted(true);
+      toast.success(t('Appointment booked successfully!', 'ချိန်းဆိုမှု အောင်မြင်စွာ ချိန်းဆိုပြီးပါပြီ!'));
+    } catch (error) {
+      console.error('Booking failed:', error);
+      toast.error(t('Failed to book appointment. Please try again.', 'ချိန်းဆိုမှု ချိန်းဆို၍ မရပါ။ ထပ်မံကြိုးစားပါ။'));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  // Generate next 30 days (excluding Sundays)
   const availableDates = Array.from({ length: 30 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() + i + 1);
     return date;
   }).filter(d => d.getDay() !== 0);
+
+  // Show loading while fetching services/doctors
+  if (servicesLoading || doctorsLoading) {
+    return <div className="pt-20"><LoadingSpinner /></div>;
+  }
 
   if (isSubmitted) {
     return (
@@ -122,7 +153,7 @@ export default function AppointmentPage() {
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                 <h2 className="text-xl font-bold text-gray-900 mb-4">{t('Select a Service', 'ဝန်ဆောင်မှု ရွေးချယ်ပါ')}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {mockServices.map((service) => (
+                  {services.map((service) => (
                     <button
                       key={service.id}
                       onClick={() => setForm({ ...form, serviceId: service.id })}
@@ -157,7 +188,7 @@ export default function AppointmentPage() {
                   >
                     <span className="font-medium text-gray-900">{t('No Preference', 'နှစ်သက်မှု မရှိပါ')}</span>
                   </button>
-                  {mockDoctors.map((doctor) => (
+                  {doctors.map((doctor) => (
                     <button
                       key={doctor.id}
                       onClick={() => setForm({ ...form, doctorId: doctor.id })}
@@ -176,7 +207,7 @@ export default function AppointmentPage() {
               </motion.div>
             )}
 
-            {/* Step 3: Date & Time */}
+            {/* Step 3: Date & Time - same as before */}
             {currentStep === 3 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                 <h2 className="text-xl font-bold text-gray-900 mb-4">{t('Select Date & Time', 'ရက်စွဲနှင့် အချိန် ရွေးချယ်ပါ')}</h2>
@@ -225,7 +256,7 @@ export default function AppointmentPage() {
               </motion.div>
             )}
 
-            {/* Step 4: Personal Info */}
+            {/* Step 4: Personal Info - same as before */}
             {currentStep === 4 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                 <h2 className="text-xl font-bold text-gray-900 mb-4">{t('Your Information', 'သင့်အချက်အလက်')}</h2>
@@ -295,7 +326,7 @@ export default function AppointmentPage() {
               </motion.div>
             )}
 
-            {/* Step 5: Confirmation */}
+            {/* Step 5: Confirmation - same as before */}
             {currentStep === 5 && (
               <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
                 <h2 className="text-xl font-bold text-gray-900 mb-4">{t('Review & Confirm', 'ပြန်လည်စစ်ဆေးပြီး အတည်ပြုပါ')}</h2>
@@ -356,9 +387,16 @@ export default function AppointmentPage() {
                   {t('Next', 'ရှေ့သို့')} <ArrowRight className="w-4 h-4" />
                 </button>
               ) : (
-                <button onClick={handleSubmit} className="btn-primary flex items-center gap-2 !bg-accent-400 !text-gray-900 hover:!bg-accent-300">
+                <button 
+                  onClick={handleSubmit} 
+                  disabled={isSubmitting}
+                  className={`btn-primary flex items-center gap-2 !bg-accent-400 !text-gray-900 hover:!bg-accent-300 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
                   <Calendar className="w-5 h-5" />
-                  {t('Confirm Booking', 'ချိန်းဆိုမှု အတည်ပြုရန်')}
+                  {isSubmitting 
+                    ? t('Booking...', 'ချိန်းဆိုနေသည်...') 
+                    : t('Confirm Booking', 'ချိန်းဆိုမှု အတည်ပြုရန်')
+                  }
                 </button>
               )}
             </div>

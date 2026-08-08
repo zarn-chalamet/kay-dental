@@ -1,11 +1,16 @@
 import AdminGenericPage from './AdminGenericPage';
-import { mockHolidays } from '@/data/mockData';
+import { useAdminHolidays } from '@/hooks/useAdminData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AdminHolidaysPage() {
+  const { data: holidays = [], isLoading } = useAdminHolidays();
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <AdminGenericPage
       title="Holidays"
-      data={mockHolidays as unknown as Record<string, unknown>[]}
+      data={holidays as unknown as Record<string, unknown>[]}
       columns={[
         { key: 'nameEn', label: 'Holiday' },
         { key: 'startDate', label: 'Start Date' },

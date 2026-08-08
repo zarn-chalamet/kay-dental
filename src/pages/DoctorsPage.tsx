@@ -2,18 +2,48 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Calendar, Clock } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockDoctors } from '@/data/mockData';
-
+import { useDoctors } from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import ErrorMessage from '@/components/ErrorMessage';
 
 export default function DoctorsPage() {
   const { t } = useLanguageStore();
+  const { data: doctors = [], isLoading, error, isError } = useDoctors();
+
+  if (isLoading) return <LoadingSpinner />;
+
+  if (isError) {
+    return (
+      <div className="pt-20">
+        <ErrorMessage 
+          message={t('Failed to load doctors. Please check your connection.', 'ဆရာဝန်များ ရယူ၍ မရပါ။ ချိတ်ဆက်မှုကို စစ်ဆေးပါ။')}
+          queryKey={['doctors']}
+        />
+      </div>
+    );
+  }
+  
+  if (error) {
+    return (
+      <div className="pt-20 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{t('Failed to load doctors', 'ဆရာဝန်များ ရယူ၍ မရပါ')}</p>
+          <button onClick={() => window.location.reload()} className="btn-primary">
+            {t('Reload', 'ပြန်လည်ဖွင့်ရန်')}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-20">
       <section className="gradient-green py-16 md:py-20">
         <div className="container-custom text-center text-white">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('Our Dental Team', 'ကျွန်ုပ်တို့၏ သွားကုသမှု အဖွဲ့')}</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {t('Our Dental Team', 'ကျွန်ုပ်တို့၏ သွားကုသမှု အဖွဲ့')}
+            </h1>
             <p className="text-lg text-green-100 max-w-2xl mx-auto">
               {t('Experienced, caring, and dedicated to your dental health', 'အတွေ့အကြုံရှိ၊ ဂရုစိုက်ပြီး သင့်သွားကျန်းမာရေးအတွက် အပ်နှံထားသည်')}
             </p>
@@ -24,7 +54,7 @@ export default function DoctorsPage() {
       <section className="section-padding">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mockDoctors.map((doctor, i) => (
+            {doctors.map((doctor, i) => (
               <motion.div
                 key={doctor.id}
                 initial={{ opacity: 0, y: 20 }}

@@ -2,13 +2,21 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Star, Quote } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockTestimonials } from '@/data/mockData';
+import { useTestimonials } from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function TestimonialsPage() {
   const { t } = useLanguageStore();
   const [filter, setFilter] = useState('All');
-  const treatments = ['All', ...new Set(mockTestimonials.map(t => t.treatment))];
-  const filtered = filter === 'All' ? mockTestimonials : mockTestimonials.filter(te => te.treatment === filter);
+  
+  const { data: testimonials = [], isLoading } = useTestimonials();
+
+  if (isLoading) return <LoadingSpinner />;
+
+  const treatments = ['All', ...new Set(testimonials.map(t => t.treatment))];
+  const filtered = filter === 'All' 
+    ? testimonials 
+    : testimonials.filter(te => te.treatment === filter);
 
   return (
     <div className="pt-20">

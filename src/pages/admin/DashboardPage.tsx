@@ -1,13 +1,22 @@
 import { motion } from 'framer-motion';
-import { Calendar, Users, Stethoscope, MessageSquare, TrendingUp, Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
-import { mockAppointments, mockDoctors, mockServices } from '@/data/mockData';
-
-const stats = [
-  { label: 'Total Appointments', value: mockAppointments.length, icon: <Calendar />, color: 'bg-blue-100 text-blue-600' },
-  { label: 'Pending', value: mockAppointments.filter(a => a.status === 'PENDING').length, icon: <Clock />, color: 'bg-yellow-100 text-yellow-600' },
-  { label: 'Doctors', value: mockDoctors.length, icon: <Users />, color: 'bg-green-100 text-green-600' },
-  { label: 'Services', value: mockServices.length, icon: <Stethoscope />, color: 'bg-purple-100 text-purple-600' },
-];
+import { 
+  Calendar, 
+  Users, 
+  Stethoscope, 
+  MessageSquare, 
+  TrendingUp, 
+  Clock, 
+  CheckCircle, 
+  AlertCircle, 
+  XCircle 
+} from 'lucide-react';
+import { 
+  useDashboardStats, 
+  useAdminAppointments, 
+  useAdminDoctors, 
+  useAdminServices 
+} from '@/hooks/useAdminData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const statusIcons: Record<string, React.ReactNode> = {
   PENDING: <Clock className="w-4 h-4 text-yellow-500" />,
@@ -26,6 +35,45 @@ const statusBg: Record<string, string> = {
 };
 
 export default function DashboardPage() {
+  // Fetch data from API
+  const { data: dashboardStats, isLoading: statsLoading } = useDashboardStats();
+  const { data: appointmentsData, isLoading: appointmentsLoading } = useAdminAppointments({ size: 10 });
+  const { data: doctors = [], isLoading: doctorsLoading } = useAdminDoctors();
+  const { data: services = [], isLoading: servicesLoading } = useAdminServices();
+
+  const isLoading = statsLoading || appointmentsLoading || doctorsLoading || servicesLoading;
+
+  if (isLoading) return <LoadingSpinner />;
+
+  const appointments = appointmentsData?.content || [];
+
+  const stats = [
+    { 
+      label: 'Total Appointments', 
+      value: dashboardStats?.totalAppointments ?? appointments.length, 
+      icon: <Calendar className="w-5 h-5" />, 
+      color: 'bg-blue-100 text-blue-600' 
+    },
+    { 
+      label: 'Pending', 
+      value: dashboardStats?.pendingAppointments ?? appointments.filter(a => a.status === 'PENDING').length, 
+      icon: <Clock className="w-5 h-5" />, 
+      color: 'bg-yellow-100 text-yellow-600' 
+    },
+    { 
+      label: 'Doctors', 
+      value: doctors.length, 
+      icon: <Users className="w-5 h-5" />, 
+      color: 'bg-green-100 text-green-600' 
+    },
+    { 
+      label: 'Services', 
+      value: services.length, 
+      icon: <Stethoscope className="w-5 h-5" />, 
+      color: 'bg-purple-100 text-purple-600' 
+    },
+  ];
+
   return (
     <div>
       <div className="mb-8">
@@ -33,7 +81,7 @@ export default function DashboardPage() {
         <p className="text-gray-500">Welcome back, Admin</p>
       </div>
 
-      {/* Stats */}
+      {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {stats.map((stat, i) => (
           <motion.div
@@ -75,26 +123,34 @@ export default function DashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {mockAppointments.map((appt) => {
-                const service = mockServices.find(s => s.id === appt.serviceId);
-                return (
-                  <tr key={appt.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="font-medium text-gray-900 text-sm">{appt.patientName}</div>
-                      <div className="text-xs text-gray-500">{appt.patientPhone}</div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{service?.nameEn || '-'}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{appt.appointmentDate}</td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{appt.appointmentTime}</td>
-                    <td className="px-6 py-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${statusBg[appt.status]}`}>
-                        {statusIcons[appt.status]}
-                        {appt.status}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
+              {appointments.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+                    No appointments found
+                  </td>
+                </tr>
+              ) : (
+                appointments.map((appt) => {
+                  const service = services.find(s => s.id === appt.serviceId);
+                  return (
+                    <tr key={appt.id} className="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-4">
+                        <div className="font-medium text-gray-900 text-sm">{appt.patientName}</div>
+                        <div className="text-xs text-gray-500">{appt.patientPhone}</div>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{service?.nameEn || '-'}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{appt.appointmentDate}</td>
+                      <td className="px-6 py-4 text-sm text-gray-600">{appt.appointmentTime}</td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${statusBg[appt.status]}`}>
+                          {statusIcons[appt.status]}
+                          {appt.status}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

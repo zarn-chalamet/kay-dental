@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockFaqs } from '@/data/mockData';
+import { useFaqs } from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 const categories = [
   { value: 'ALL', labelEn: 'All', labelMm: 'အားလုံး' },
@@ -18,8 +19,12 @@ export default function FaqPage() {
   const [activeCategory, setActiveCategory] = useState('ALL');
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const { data: faqs = [], isLoading } = useFaqs();
 
-  const filtered = mockFaqs
+  if (isLoading) return <LoadingSpinner />;
+
+  const filtered = faqs
     .filter(f => activeCategory === 'ALL' || f.category === activeCategory)
     .filter(f => {
       if (!searchQuery) return true;
@@ -33,8 +38,12 @@ export default function FaqPage() {
       <section className="gradient-green py-16 md:py-20">
         <div className="container-custom text-center text-white">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('Frequently Asked Questions', 'မေးလေ့ရှိသော မေးခွန်းများ')}</h1>
-            <p className="text-lg text-green-100">{t('Find answers to your dental questions', 'သင့် သွားဆိုင်ရာ မေးခွန်းများ၏ အဖြေများကို ရှာဖွေပါ')}</p>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              {t('Frequently Asked Questions', 'မေးလေ့ရှိသော မေးခွန်းများ')}
+            </h1>
+            <p className="text-lg text-green-100">
+              {t('Find answers to your dental questions', 'သင့် သွားဆိုင်ရာ မေးခွန်းများ၏ အဖြေများကို ရှာဖွေပါ')}
+            </p>
           </motion.div>
         </div>
       </section>

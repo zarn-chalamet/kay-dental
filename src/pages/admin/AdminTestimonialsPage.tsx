@@ -1,12 +1,17 @@
 import AdminGenericPage from './AdminGenericPage';
-import { mockTestimonials } from '@/data/mockData';
+import { useAdminTestimonials } from '@/hooks/useAdminData';
 import { Star } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AdminTestimonialsPage() {
+  const { data: testimonials = [], isLoading } = useAdminTestimonials();
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <AdminGenericPage
       title="Testimonials"
-      data={mockTestimonials as unknown as Record<string, unknown>[]}
+      data={testimonials as unknown as Record<string, unknown>[]}
       columns={[
         { key: 'patientName', label: 'Patient' },
         { key: 'treatment', label: 'Treatment' },

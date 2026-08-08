@@ -1,12 +1,17 @@
 import AdminGenericPage from './AdminGenericPage';
-import { mockServices } from '@/data/mockData';
+import { useAdminServices } from '@/hooks/useAdminData';
 import { formatPrice } from '@/utils/clinicStatus';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AdminServicesPage() {
+  const { data: services = [], isLoading } = useAdminServices();
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <AdminGenericPage
       title="Services"
-      data={mockServices as unknown as Record<string, unknown>[]}
+      data={services as unknown as Record<string, unknown>[]}
       columns={[
         { key: 'nameEn', label: 'Service Name' },
         { key: 'category', label: 'Category', render: (item) => (

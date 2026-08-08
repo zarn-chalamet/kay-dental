@@ -1,11 +1,16 @@
 import AdminGenericPage from './AdminGenericPage';
-import { mockDoctors } from '@/data/mockData';
+import { useAdminDoctors } from '@/hooks/useAdminData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function AdminDoctorsPage() {
+  const { data: doctors = [], isLoading } = useAdminDoctors();
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <AdminGenericPage
       title="Doctors"
-      data={mockDoctors as unknown as Record<string, unknown>[]}
+      data={doctors as unknown as Record<string, unknown>[]}
       columns={[
         { key: 'nameEn', label: 'Name', render: (item) => (
           <div className="flex items-center gap-3">

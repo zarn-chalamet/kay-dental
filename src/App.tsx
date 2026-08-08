@@ -1,4 +1,4 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 
 // Layouts
@@ -37,7 +37,7 @@ import AdminSettingsPage from '@/pages/admin/AdminSettingsPage';
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -94,6 +94,6 @@ export default function App() {
         {/* 404 */}
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
-    </HashRouter>
+    </BrowserRouter>
   );
 }

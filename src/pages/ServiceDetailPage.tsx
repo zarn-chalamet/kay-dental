@@ -2,20 +2,28 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Clock, ArrowLeft, Calendar, CheckCircle } from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
-import { mockServices } from '@/data/mockData';
+import { useServiceBySlug } from '@/hooks/usePublicData';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { formatPrice } from '@/utils/clinicStatus';
 
 export default function ServiceDetailPage() {
   const { slug } = useParams();
   const { t } = useLanguageStore();
-  const service = mockServices.find(s => s.slug === slug);
+  
+  const { data: service, isLoading, error } = useServiceBySlug(slug!);
 
-  if (!service) {
+  if (isLoading) return <LoadingSpinner />;
+
+  if (error || !service) {
     return (
       <div className="pt-20 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t('Service Not Found', 'ဝန်ဆောင်မှု ရှာမတွေ့ပါ')}</h1>
-          <Link to="/services" className="btn-primary mt-4 inline-block">{t('Back to Services', 'ဝန်ဆောင်မှုများသို့ ပြန်သွားရန်')}</Link>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">
+            {t('Service Not Found', 'ဝန်ဆောင်မှု ရှာမတွေ့ပါ')}
+          </h1>
+          <Link to="/services" className="btn-primary mt-4 inline-block">
+            {t('Back to Services', 'ဝန်ဆောင်မှုများသို့ ပြန်သွားရန်')}
+          </Link>
         </div>
       </div>
     );
