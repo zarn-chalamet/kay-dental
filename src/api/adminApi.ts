@@ -278,15 +278,20 @@ export const adminContactApi = {
 
 // ============ FILE UPLOAD ============
 export const uploadApi = {
-  uploadImage: async (file: File): Promise<{ url: string; publicId: string }> => {
+  uploadImage: async (file: File, folder: string = 'general'): Promise<{ url: string; publicId: string }> => {
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('folder', folder);
     
-    const response = await axiosInstance.post<ApiResponse<{ url: string; publicId: string }>>('/admin/upload/image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    const response = await axiosInstance.post<ApiResponse<{ url: string; publicId: string }>>(
+      '/admin/upload/image', 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
     return response.data.data;
   },
 };
