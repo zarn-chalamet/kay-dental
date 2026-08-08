@@ -1,9 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios';
 
-// Base URL for the Spring Boot backend API
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
-// Create axios instance with default config
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
@@ -12,7 +10,7 @@ const axiosInstance = axios.create({
   },
 });
 
-// Request interceptor - add auth token to requests
+// Request interceptor - add auth token
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = localStorage.getItem('kay-dental-token');
@@ -26,23 +24,29 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor - handle errors globally
+// Response interceptor - handle 401/403 (token expired or invalid)
 axiosInstance.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
   (error: AxiosError) => {
     if (error.response) {
-      // Handle 401 Unauthorized - redirect to login
-      if (error.response.status === 401) {
+      const status = error.response.status;
+      const isAdminRoute = error.config?.url?.includes('/admin/');
+      
+      // Handle 401 Unauthorized or 403 Forbidden on admin routes
+      if ((status === 401 || status === 403) && isAdminRoute) {
+        console.warn('🔒 Token invalid or expired. Logging out...');
+        
+        // Clear all auth data
         localStorage.removeItem('kay-dental-token');
         localStorage.removeItem('kay-dental-auth');
-        window.location.href = '/#/admin/login';
-      }
-      
-      // Handle 403 Forbidden
-      if (error.response.status === 403) {
-        console.error('Access denied');
+        
+        // Only redirect if not already on login page
+        if (!window.location.pathname.includes('/admin/login')) {
+          // Force full page reload to clear all state
+          window.location.href = '/admin/login';
+        }
       }
     }
     return Promise.reject(error);

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Image, Calendar, Users, Stethoscope,
@@ -24,11 +24,28 @@ export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { logout, user } = useAuthStore();
+  const { logout, user, isAuthenticated, token } = useAuthStore();
+
+  // Check auth on mount and when token changes
+  useEffect(() => {
+    const storedToken = localStorage.getItem('kay-dental-token');
+    
+    // If not authenticated or no token, redirect to login
+    if (!isAuthenticated || !token || !storedToken) {
+      console.warn('🔒 Not authenticated, redirecting to login');
+      logout();
+      navigate('/admin/login', { replace: true });
+    }
+  }, [isAuthenticated, token, navigate, logout]);
+
+  // Don't render layout if not authenticated
+  if (!isAuthenticated || !token) {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login');
+    navigate('/admin/login', { replace: true });
   };
 
   return (
