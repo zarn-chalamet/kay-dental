@@ -105,14 +105,15 @@ export interface GalleryPhoto {
 }
 
 export interface Testimonial {
-  id: number;
+  id?: number;
   patientName: string;
-  treatment: string;
-  reviewEn: string;
-  reviewMm: string;
-  rating: number;
-  photoUrl: string;
-  isActive: boolean;
+  treatment?: string;
+  reviewEn?: string;
+  reviewMm?: string;
+  rating?: number;
+  photoUrl?: string;
+  isActive?: boolean;
+  createdAt?: string;
 }
 
 export interface Faq {
