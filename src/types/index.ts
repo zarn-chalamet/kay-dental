@@ -1,16 +1,20 @@
 export interface Banner {
-  id: number;
+  id?: number;
   titleEn: string;
-  titleMm: string;
-  messageEn: string;
-  messageMm: string;
-  imageUrl: string;
-  buttonTextEn: string;
-  buttonTextMm: string;
-  buttonLink: string;
-  type: 'HOLIDAY' | 'PROMOTION' | 'ANNOUNCEMENT' | 'GENERAL' | 'URGENT';
-  displayOrder: number;
-  isActive: boolean;
+  titleMm?: string;
+  messageEn?: string;
+  messageMm?: string;
+  imageUrl?: string;
+  buttonTextEn?: string;
+  buttonTextMm?: string;
+  buttonLink?: string;
+  type: 'GENERAL' | 'PROMOTION' | 'ANNOUNCEMENT' | 'HOLIDAY';
+  displayOrder?: number;
+  startDate?: string | null;
+  endDate?: string | null;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Doctor {
