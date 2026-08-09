@@ -74,16 +74,21 @@ export interface Appointment {
 }
 
 export interface Holiday {
-  id: number;
+  id?: number;
   nameEn: string;
-  nameMm: string;
+  nameMm?: string;
   startDate: string;
   endDate: string;
-  reopenDate: string;
-  greetingEn: string;
-  greetingMm: string;
+  reopenDate?: string;
+  greetingEn?: string;
+  greetingMm?: string;
+  bannerStyle?: string;
   theme: string;
-  isActive: boolean;
+  notifyDaysBefore?: number;
+  showEmergencyContact?: boolean;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface GalleryPhoto {
