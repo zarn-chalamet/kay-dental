@@ -116,14 +116,15 @@ export interface Testimonial {
 }
 
 export interface Faq {
-  id: number;
+  id?: number;
   questionEn: string;
-  questionMm: string;
+  questionMm?: string;
   answerEn: string;
-  answerMm: string;
+  answerMm?: string;
   category: 'GENERAL' | 'TREATMENT' | 'PAYMENT' | 'EMERGENCY' | 'BOOKING';
-  displayOrder: number;
-  isActive: boolean;
+  displayOrder?: number;
+  isActive?: boolean;
+  createdAt?: string;
 }
 
 export interface ContactMessage {
