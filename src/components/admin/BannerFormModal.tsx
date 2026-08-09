@@ -20,6 +20,32 @@ const BANNER_TYPES = [
   { value: 'HOLIDAY', label: 'Holiday' },
 ];
 
+// Helper function to convert date to YYYY-MM-DD format
+const formatDateForInput = (date: any): string => {
+  if (!date) return '';
+  
+  // If date is already a string like "2026-08-16"
+  if (typeof date === 'string') {
+    return date.split('T')[0]; // Handle ISO format too
+  }
+  
+  // If date is array [year, month, day] from backend
+  if (Array.isArray(date)) {
+    const [year, month, day] = date;
+    // Pad with zeros: month 8 → "08"
+    const monthStr = String(month).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    return `${year}-${monthStr}-${dayStr}`;
+  }
+  
+  // If date is Date object
+  if (date instanceof Date) {
+    return date.toISOString().split('T')[0];
+  }
+  
+  return '';
+};
+
 export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormModalProps) {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,10 +68,11 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
 
   useEffect(() => {
     if (banner) {
+      // Convert dates properly when editing
       setForm({
         ...banner,
-        startDate: banner.startDate || '',
-        endDate: banner.endDate || '',
+        startDate: formatDateForInput(banner.startDate),
+        endDate: formatDateForInput(banner.endDate),
       });
     } else {
       setForm({
@@ -69,12 +96,29 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate dates
+    if (form.startDate && form.endDate) {
+      const start = new Date(form.startDate);
+      const end = new Date(form.endDate);
+      
+      if (end < start) {
+        toast.error('End date must be after or equal to start date');
+        return;
+      }
+    }
+    
+    // Validate: if only end date is set without start date
+    if (form.endDate && !form.startDate) {
+      toast.error('Please set a start date if you want to set an end date');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       let imageUrl = form.imageUrl;
 
-      // Upload image only if new file selected
       if (imageFile) {
         try {
           toast.loading('Uploading image...', { id: 'upload' });
@@ -90,7 +134,6 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
         }
       }
 
-      // Clean empty date fields (send null instead of empty string)
       const dataToSave = { 
         ...form, 
         imageUrl,
@@ -107,6 +150,7 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
       }
       
       queryClient.invalidateQueries({ queryKey: ['admin', 'banners'] });
+      queryClient.invalidateQueries({ queryKey: ['banners'] });
       onClose();
     } catch (error) {
       console.error('Save failed:', error);
@@ -126,6 +170,16 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
   const handleClose = () => {
     setImageFile(null);
     onClose();
+  };
+
+  // Clear end date if start date is cleared
+  const handleStartDateChange = (value: string) => {
+    setForm({ 
+      ...form, 
+      startDate: value,
+      // If clearing start date, also clear end date
+      endDate: value ? form.endDate : ''
+    });
   };
 
   return (
@@ -160,17 +214,14 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                 </button>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
                 <div className="p-6 space-y-4">
-                  {/* Banner Image */}
                   <ImageUpload
                     value={form.imageUrl}
                     onChange={handleImageChange}
                     label="Banner Image"
                   />
 
-                  {/* Title */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -197,7 +248,6 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                     </div>
                   </div>
 
-                  {/* Message */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Message (English)
@@ -222,7 +272,6 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                     />
                   </div>
 
-                  {/* Type & Order */}
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -255,7 +304,6 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                     </div>
                   </div>
 
-                  {/* Button */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -283,7 +331,6 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                     </div>
                   </div>
 
-                  {/* Button Link */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Button Link
@@ -298,33 +345,68 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                     <p className="text-xs text-gray-400 mt-1">Example: /appointment, /services, /doctors</p>
                   </div>
 
-                  {/* Date Range */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Start Date (Optional)
-                      </label>
-                      <input
-                        type="date"
-                        value={form.startDate || ''}
-                        onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      />
+                  {/* Date Range with Validation */}
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                      Schedule (Optional)
+                    </h4>
+                    <p className="text-xs text-gray-500 mb-3">
+                      Leave empty for banner to always show. Set dates to schedule visibility.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Start Date
+                        </label>
+                        <input
+                          type="date"
+                          value={form.startDate || ''}
+                          onChange={(e) => handleStartDateChange(e.target.value)}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          End Date
+                        </label>
+                        <input
+                          type="date"
+                          value={form.endDate || ''}
+                          min={form.startDate || undefined}
+                          disabled={!form.startDate}
+                          onChange={(e) => setForm({ ...form, endDate: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                        />
+                        {!form.startDate && (
+                          <p className="text-xs text-gray-400 mt-1">Set start date first</p>
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        End Date (Optional)
-                      </label>
-                      <input
-                        type="date"
-                        value={form.endDate || ''}
-                        onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      />
-                    </div>
+                    
+                    {/* Show current status */}
+                    {form.startDate && form.endDate && (
+                      <div className="mt-3 p-2 rounded-lg bg-blue-50 border border-blue-200">
+                        <p className="text-xs text-blue-700">
+                          📅 Banner will show from <strong>{form.startDate}</strong> to <strong>{form.endDate}</strong>
+                        </p>
+                      </div>
+                    )}
+                    {form.startDate && !form.endDate && (
+                      <div className="mt-3 p-2 rounded-lg bg-blue-50 border border-blue-200">
+                        <p className="text-xs text-blue-700">
+                          📅 Banner will show from <strong>{form.startDate}</strong> onwards (no end date)
+                        </p>
+                      </div>
+                    )}
+                    {!form.startDate && !form.endDate && (
+                      <div className="mt-3 p-2 rounded-lg bg-green-50 border border-green-200">
+                        <p className="text-xs text-green-700">
+                          ✅ Banner will always be visible (when active)
+                        </p>
+                      </div>
+                    )}
                   </div>
 
-                  {/* Active toggle */}
                   <div className="flex items-center gap-3">
                     <input
                       type="checkbox"
@@ -339,7 +421,6 @@ export default function BannerFormModal({ isOpen, onClose, banner }: BannerFormM
                   </div>
                 </div>
 
-                {/* Footer */}
                 <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-100">
                   <button
                     type="button"

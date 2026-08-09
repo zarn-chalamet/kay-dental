@@ -38,21 +38,23 @@ export interface Doctor {
 }
 
 export interface DentalService {
-  id: number;
+  id?: number;
   nameEn: string;
-  nameMm: string;
-  slug: string;
+  nameMm?: string;
+  slug?: string;
   shortDescriptionEn: string;
-  shortDescriptionMm: string;
-  fullDescriptionEn: string;
-  fullDescriptionMm: string;
+  shortDescriptionMm?: string;
+  fullDescriptionEn?: string;
+  fullDescriptionMm?: string;
   startingPrice: number;
   durationMinutes: number;
   category: 'GENERAL' | 'COSMETIC' | 'ORTHODONTICS' | 'SURGERY' | 'PEDIATRIC' | 'EMERGENCY';
-  iconName: string;
-  imageUrl: string;
-  displayOrder: number;
-  isActive: boolean;
+  iconName?: string;
+  imageUrl?: string;
+  displayOrder?: number;
+  isActive?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Appointment {
