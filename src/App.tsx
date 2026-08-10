@@ -34,6 +34,7 @@ import AdminGalleryPage from '@/pages/admin/AdminGalleryPage';
 import AdminTestimonialsPage from '@/pages/admin/AdminTestimonialsPage';
 import AdminFaqsPage from '@/pages/admin/AdminFaqsPage';
 import AdminSettingsPage from '@/pages/admin/AdminSettingsPage';
+import AdminContactPage from './pages/admin/AdminContactPage';
 
 export default function App() {
   return (
@@ -88,6 +89,7 @@ export default function App() {
           <Route path="/admin/gallery" element={<AdminGalleryPage />} />
           <Route path="/admin/testimonials" element={<AdminTestimonialsPage />} />
           <Route path="/admin/faqs" element={<AdminFaqsPage />} />
+          <Route path="/admin/messages" element={<AdminContactPage />} />
           <Route path="/admin/settings" element={<AdminSettingsPage />} />
         </Route>
 

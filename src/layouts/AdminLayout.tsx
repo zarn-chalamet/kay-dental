@@ -3,21 +3,22 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Image, Calendar, Users, Stethoscope,
   CalendarOff, ImageIcon, Star, HelpCircle, Settings, LogOut,
-  Menu, X, ChevronLeft
+  Menu, X, ChevronLeft, MessageSquare,
 } from 'lucide-react';
 import { useAuthStore } from '@/store/useAuthStore';
 
 const sidebarLinks = [
-  { path: '/admin', icon: <LayoutDashboard className="w-5 h-5" />, label: 'Dashboard' },
-  { path: '/admin/appointments', icon: <Calendar className="w-5 h-5" />, label: 'Appointments' },
-  { path: '/admin/banners', icon: <Image className="w-5 h-5" />, label: 'Banners' },
-  { path: '/admin/doctors', icon: <Users className="w-5 h-5" />, label: 'Doctors' },
-  { path: '/admin/services', icon: <Stethoscope className="w-5 h-5" />, label: 'Services' },
-  { path: '/admin/holidays', icon: <CalendarOff className="w-5 h-5" />, label: 'Holidays' },
-  { path: '/admin/gallery', icon: <ImageIcon className="w-5 h-5" />, label: 'Gallery' },
-  { path: '/admin/testimonials', icon: <Star className="w-5 h-5" />, label: 'Testimonials' },
-  { path: '/admin/faqs', icon: <HelpCircle className="w-5 h-5" />, label: 'FAQs' },
-  { path: '/admin/settings', icon: <Settings className="w-5 h-5" />, label: 'Settings' },
+  { path: '/admin',              icon: <LayoutDashboard className="w-5 h-5" />, label: 'Dashboard' },
+  { path: '/admin/appointments', icon: <Calendar className="w-5 h-5" />,        label: 'Appointments' },
+  { path: '/admin/messages',     icon: <MessageSquare className="w-5 h-5" />,   label: 'Messages' },
+  { path: '/admin/banners',      icon: <Image className="w-5 h-5" />,           label: 'Banners' },
+  { path: '/admin/doctors',      icon: <Users className="w-5 h-5" />,           label: 'Doctors' },
+  { path: '/admin/services',     icon: <Stethoscope className="w-5 h-5" />,     label: 'Services' },
+  { path: '/admin/holidays',     icon: <CalendarOff className="w-5 h-5" />,     label: 'Holidays' },
+  { path: '/admin/gallery',      icon: <ImageIcon className="w-5 h-5" />,       label: 'Gallery' },
+  { path: '/admin/testimonials', icon: <Star className="w-5 h-5" />,            label: 'Testimonials' },
+  { path: '/admin/faqs',         icon: <HelpCircle className="w-5 h-5" />,      label: 'FAQs' },
+  { path: '/admin/settings',     icon: <Settings className="w-5 h-5" />,        label: 'Settings' },
 ];
 
 export default function AdminLayout() {
@@ -26,11 +27,8 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const { logout, user, isAuthenticated, token } = useAuthStore();
 
-  // Check auth on mount and when token changes
   useEffect(() => {
     const storedToken = localStorage.getItem('kay-dental-token');
-    
-    // If not authenticated or no token, redirect to login
     if (!isAuthenticated || !token || !storedToken) {
       console.warn('🔒 Not authenticated, redirecting to login');
       logout();
@@ -38,7 +36,6 @@ export default function AdminLayout() {
     }
   }, [isAuthenticated, token, navigate, logout]);
 
-  // Don't render layout if not authenticated
   if (!isAuthenticated || !token) {
     return null;
   }
@@ -100,7 +97,6 @@ export default function AdminLayout() {
 
       {/* Main content */}
       <div className="flex-1 lg:ml-64">
-        {/* Top bar */}
         <header className="sticky top-0 z-40 h-16 bg-white/95 backdrop-blur-md border-b border-gray-200 flex items-center px-4 lg:px-8">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-gray-100 mr-3">
             <Menu className="w-5 h-5" />
@@ -117,13 +113,11 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        {/* Content */}
         <main className="p-4 lg:p-8">
           <Outlet />
         </main>
       </div>
 
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/30 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}

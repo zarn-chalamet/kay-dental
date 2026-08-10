@@ -10,6 +10,7 @@ import {
   adminGalleryApi,
   adminHolidayApi,
   adminContactApi,
+  adminSettingsApi,
 } from '@/api/adminApi';
 
 // Dashboard
@@ -95,5 +96,13 @@ export const useAdminContactMessages = (page = 0, size = 20) => {
   return useQuery({
     queryKey: ['admin', 'messages', page, size],
     queryFn: () => adminContactApi.getAll(page, size),
+  });
+};
+
+// Settings
+export const useAdminSettings = () => {
+  return useQuery({
+    queryKey: ['admin', 'settings'],
+    queryFn: adminSettingsApi.getAll,
   });
 };
