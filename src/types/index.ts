@@ -61,16 +61,19 @@ export interface Appointment {
   id: number;
   patientName: string;
   patientPhone: string;
-  patientEmail: string;
-  serviceId: number;
-  doctorId: number | null;
+  patientEmail?: string | null;
+  service?: DentalService | null;
+  doctor?: Doctor | null;
+  serviceId?: number;
+  doctorId?: number | null;
   appointmentDate: string;
   appointmentTime: string;
   isNewPatient: boolean;
-  notes: string;
+  notes?: string | null;
   status: 'PENDING' | 'CONFIRMED' | 'CANCELLED' | 'COMPLETED' | 'NO_SHOW';
-  adminNotes: string;
+  adminNotes?: string | null;
   createdAt: string;
+  updatedAt?: string | null;
 }
 
 export interface Holiday {
