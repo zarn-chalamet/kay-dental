@@ -23,6 +23,7 @@ export interface DashboardStats {
   pendingAppointments: number;
   totalPatients: number;
   appointmentsThisMonth: number;
+  unreadMessages: number;
 }
 
 export const adminDashboardApi = {
