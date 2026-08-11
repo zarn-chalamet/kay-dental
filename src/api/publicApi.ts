@@ -1,5 +1,7 @@
 import axiosInstance from './axiosInstance';
 import type { Banner, Doctor, DentalService, Testimonial, Faq, GalleryPhoto, Holiday, ClinicSettings } from '@/types';
+import { mapClinicSettings } from '@/utils/settingsMapper';
+import type { ClinicSettingsRaw } from '@/types';
 
 // Generic API response wrapper
 interface ApiResponse<T> {
@@ -91,9 +93,9 @@ export interface ClinicStatusResponse {
 }
 
 export const clinicApi = {
-  getSettings: async (): Promise<ClinicSettings> => {
-    const response = await axiosInstance.get<ApiResponse<ClinicSettings>>('/clinic/settings');
-    return response.data.data;
+    getSettings: async (): Promise<ClinicSettings> => {
+    const response = await axiosInstance.get<ApiResponse<ClinicSettingsRaw>>('/clinic/settings');
+    return mapClinicSettings(response.data.data);
   },
 
   getStatus: async (): Promise<ClinicStatusResponse> => {

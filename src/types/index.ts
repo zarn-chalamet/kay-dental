@@ -159,6 +159,23 @@ export interface ClinicSettings {
   emergencyAvailable: boolean;
 }
 
+export interface ClinicSettingsRaw {
+  clinic_name_en: string;
+  clinic_name_mm: string;
+  address_en: string;
+  address_mm: string;
+  phone1: string;
+  phone2: string;
+  email: string;
+  viber_number: string;
+  messenger_link: string;
+  google_maps_embed_url: string;
+  google_maps_link: string;
+  opening_hours_json: string;
+  emergency_phone: string;
+  emergency_available: string;
+}
+
 export interface DaySchedule {
   day: string;
   dayMm: string;

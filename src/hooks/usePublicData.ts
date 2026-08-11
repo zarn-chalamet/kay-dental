@@ -83,13 +83,13 @@ export const useGallery = () => {
 };
 
 // ============ CLINIC ============
-export const useClinicSettings = () => {
+export function useClinicSettings() {
   return useQuery({
     queryKey: ['clinic', 'settings'],
     queryFn: clinicApi.getSettings,
-    staleTime: 1000 * 60 * 30,  // 30 min (rarely changes)
+    staleTime: 1000 * 60 * 10,
   });
-};
+}
 
 export const useClinicStatus = () => {
   return useQuery({
@@ -98,6 +98,7 @@ export const useClinicStatus = () => {
     refetchInterval: 1000 * 60,  // Refetch every minute
   });
 };
+
 
 // ============ HOLIDAYS ============
 export const useActiveHoliday = () => {
