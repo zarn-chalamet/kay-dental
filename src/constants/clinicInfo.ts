@@ -26,9 +26,32 @@ export const CLINIC_INFO: ClinicSettings = {
 };
 
 export const PAYMENT_METHODS = [
-  { name: 'Cash', icon: '💵' },
-  { name: 'KBZPay', icon: '📱' },
-  { name: 'WavePay', icon: '📱' },
-  { name: 'AYA Pay', icon: '📱' },
-  { name: 'Bank Transfer', icon: '🏦' },
+  {
+    name: 'Cash',
+    nameEn: 'Cash',
+    nameMm: 'ငွေသား',
+    logo: '/payment-logos/cash.png',
+    type: 'icon',
+  },
+  {
+    name: 'KBZ Pay',
+    nameEn: 'KBZ Pay',
+    nameMm: 'KBZ Pay',
+    logo: '/payment-logos/kbz-pay.webp',
+    type: 'image',
+  },
+  {
+    name: 'Wave Pay',
+    nameEn: 'Wave Pay',
+    nameMm: 'Wave Pay',
+    logo: '/payment-logos/wave-money.webp',
+    type: 'image',
+  },
+  {
+    name: 'AYA Pay',
+    nameEn: 'AYA Pay',
+    nameMm: 'AYA Pay',
+    logo: '/payment-logos/aya-pay.webp',
+    type: 'image',
+  },
 ];
