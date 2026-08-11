@@ -138,13 +138,13 @@ export default function ContactPage() {
             </span>
 
             <h1 className="mt-6 text-4xl font-bold tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
-              {t('We’d love to hear from you', 'သင့်ထံမှ ကြားသိရရန် ဝမ်းသာပါသည်')}
+              {t('We’d love to hear from you', 'ဆက်သွယ်ရန် ကြိုဆိုပါသည်')}
             </h1>
 
             <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-gray-600 md:text-lg">
               {t(
-                'Have a question, need help, or want to book a visit? Reach out to our team and we’ll get back to you as soon as possible.',
-                'မေးမြန်းလိုသည်များ၊ အကူအညီလိုအပ်သည်များ သို့မဟုတ် လာရောက်ကုသရန် စီစဉ်လိုပါက ကျွန်ုပ်တို့၏အဖွဲ့ထံ ဆက်သွယ်နိုင်ပါသည်။ အမြန်ဆုံး ပြန်လည်ဆက်သွယ်ပေးပါမည်။'
+                'Have a question, need help, or want to book a visit? Reach out to our team and we\'ll get back to you as soon as possible.',
+                'မေးမြန်းရန် သို့မဟုတ် ရက်ချိန်းယူရန် ဆက်သွယ်နိုင်ပါသည်။ အမြန်ဆုံး ပြန်လည်ဆက်သွယ်ပါမည်။'
               )}
             </p>
 
@@ -243,7 +243,7 @@ export default function ContactPage() {
                 </span>
 
                 <h3 className="mt-4 text-xl font-semibold text-gray-900 md:text-2xl">
-                  {t('Reach KAY Dental Care easily', 'KAY Dental Care ကို အလွယ်တကူ ဆက်သွယ်နိုင်ပါသည်')}
+                  {t('Reach KAY Dental Care easily', 'KAY Dental Care သို့ ဆက်သွယ်ရန်')}
                 </h3>
 
                 <p className="mt-3 text-base leading-relaxed text-gray-600">
@@ -466,7 +466,7 @@ export default function ContactPage() {
                   </span>
 
                   <h2 className="mt-4 text-2xl font-bold text-gray-900 md:text-3xl">
-                    {t('Tell us how we can help', 'သင့်အား မည်သို့ကူညီနိုင်မည်ကို ပြောပြပါ')}
+                    {t('Tell us how we can help', 'ကျွန်ုပ်တို့ ဘယ်လိုကူညီပေးရမလဲ')}
                   </h2>
 
                   <p className="mt-3 text-base leading-relaxed text-gray-600">

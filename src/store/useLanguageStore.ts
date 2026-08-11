@@ -8,14 +8,37 @@ interface LanguageState {
   t: (en: string, mm: string) => string;
 }
 
+// Helper to update <html lang> attribute
+const updateHtmlLang = (lang: 'en' | 'mm') => {
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = lang;
+  }
+};
+
 export const useLanguageStore = create<LanguageState>()(
   persist(
     (set, get) => ({
       language: 'en',
-      setLanguage: (lang) => set({ language: lang }),
-      toggleLanguage: () => set((state) => ({ language: state.language === 'en' ? 'mm' : 'en' })),
-      t: (en, mm) => get().language === 'en' ? en : (mm || en),
+      setLanguage: (lang) => {
+        set({ language: lang });
+        updateHtmlLang(lang);
+      },
+      toggleLanguage: () =>
+        set((state) => {
+          const next = state.language === 'en' ? 'mm' : 'en';
+          updateHtmlLang(next);
+          return { language: next };
+        }),
+      t: (en, mm) => (get().language === 'en' ? en : mm || en),
     }),
-    { name: 'kay-dental-language' }
+    {
+      name: 'kay-dental-language',
+      onRehydrateStorage: () => (state) => {
+        // Set html lang after language is loaded from localStorage
+        if (state) {
+          updateHtmlLang(state.language);
+        }
+      },
+    }
   )
 );
