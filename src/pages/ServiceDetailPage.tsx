@@ -1,106 +1,288 @@
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, ArrowLeft, Calendar, CheckCircle } from 'lucide-react';
+import {
+  Clock,
+  ArrowLeft,
+  Calendar,
+  CheckCircle,
+  Phone,
+  Stethoscope,
+  ChevronRight,
+  Info,
+} from 'lucide-react';
 import { useLanguageStore } from '@/store/useLanguageStore';
 import { useServiceBySlug } from '@/hooks/usePublicData';
-import LoadingSpinner from '@/components/LoadingSpinner';
 import { formatPrice } from '@/utils/clinicStatus';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+};
 
 export default function ServiceDetailPage() {
   const { slug } = useParams();
   const { t } = useLanguageStore();
-  
+
   const { data: service, isLoading, error } = useServiceBySlug(slug!);
 
-  if (isLoading) return <LoadingSpinner />;
-
-  if (error || !service) {
+  /* ---- Loading skeleton ---- */
+  if (isLoading) {
     return (
-      <div className="pt-20 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">
-            {t('Service Not Found', 'ဝန်ဆောင်မှု ရှာမတွေ့ပါ')}
-          </h1>
-          <Link to="/services" className="btn-primary mt-4 inline-block">
-            {t('Back to Services', 'ဝန်ဆောင်မှုများသို့ ပြန်သွားရန်')}
-          </Link>
+      <main className="bg-white pt-20 font-sans">
+        <div className="px-4 py-8 md:px-8 md:py-12 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            {/* Breadcrumb skeleton */}
+            <div className="h-4 w-48 rounded bg-gray-100 animate-pulse mb-8" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+              {/* Image skeleton */}
+              <div className="lg:col-span-3">
+                <div className="aspect-video rounded-2xl bg-gray-100 animate-pulse" />
+                <div className="mt-6 space-y-3">
+                  <div className="h-8 w-2/3 rounded-lg bg-gray-100 animate-pulse" />
+                  <div className="h-4 rounded-lg bg-gray-100 animate-pulse" />
+                  <div className="h-4 rounded-lg bg-gray-100 animate-pulse w-5/6" />
+                </div>
+              </div>
+
+              {/* Sidebar skeleton */}
+              <div className="lg:col-span-2">
+                <div className="h-64 rounded-2xl bg-gray-100 animate-pulse" />
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </main>
     );
   }
 
+  /* ---- Not found ---- */
+  if (error || !service) {
+    return (
+      <main className="bg-white pt-20 font-sans min-h-screen flex items-center justify-center">
+        <div className="mx-auto max-w-md text-center py-16 px-4">
+          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100">
+            <Stethoscope className="h-10 w-10 text-gray-400" />
+          </div>
+          <h3 className="text-xl font-bold text-gray-900">
+            {t('Service Not Found', 'ဝန်ဆောင်မှု ရှာမတွေ့ပါ')}
+          </h3>
+          <p className="mt-2 text-gray-600">
+            {t(
+              'The service you are looking for does not exist.',
+              'သင်ရှာနေသော ဝန်ဆောင်မှုကို ရှာမတွေ့ပါ။'
+            )}
+          </p>
+          <Link
+            to="/services"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-green-700 transition-colors"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            {t('Back to Services', 'ဝန်ဆောင်မှုများသို့ ပြန်သွားရန်')}
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const expectations = [
+    t('Professional consultation and examination', 'ပရော်ဖက်ရှင်နယ် ဆွေးနွေးခြင်းနှင့် စစ်ဆေးခြင်း'),
+    t('Detailed treatment plan discussion', 'အသေးစိတ် ကုသမှုအစီအစဉ် ဆွေးနွေးခြင်း'),
+    t('Comfortable and painless procedure', 'သက်တောင့်သက်သာ ကုသမှုလုပ်ငန်းစဉ်'),
+    t('Post-treatment care instructions', 'ကုသမှုပြီးနောက် စောင့်ရှောက်မှု ညွှန်ကြားချက်'),
+  ];
+
   return (
-    <div className="pt-20">
-      <section className="gradient-green py-16 md:py-20">
-        <div className="container-custom text-white">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <Link to="/services" className="inline-flex items-center gap-1 text-green-200 hover:text-white mb-4 transition-colors">
-              <ArrowLeft className="w-4 h-4" /> {t('All Services', 'ဝန်ဆောင်မှုအားလုံး')}
-            </Link>
-            <span className="block text-xs font-medium text-accent-400 bg-accent-400/20 px-3 py-1 rounded-full w-fit mb-3">
-              {service.category}
-            </span>
-            <h1 className="text-3xl md:text-5xl font-bold mb-4">{t(service.nameEn, service.nameMm)}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-green-100">
-              <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {service.durationMinutes} {t('minutes', 'မိနစ်')}</span>
-              <span className="font-semibold text-accent-400">{t('From', 'စတင်')} {formatPrice(service.startingPrice)}</span>
-            </div>
-          </motion.div>
+    <main className="bg-white pt-20 font-sans">
+      {/* ============ BREADCRUMB + SUBTLE HEADER ============ */}
+      <section className="border-b border-gray-100 bg-gray-50/50">
+        <div className="px-4 py-4 md:px-8 md:py-5 lg:px-12">
+          <div className="mx-auto max-w-7xl">
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-1.5 text-sm text-gray-500" aria-label="Breadcrumb">
+              <Link to="/" className="hover:text-green-600 transition-colors">
+                {t('Home', 'ပင်မ')}
+              </Link>
+              <ChevronRight className="h-4 w-4" />
+              <Link to="/services" className="hover:text-green-600 transition-colors">
+                {t('Services', 'ဝန်ဆောင်မှု')}
+              </Link>
+              <ChevronRight className="h-4 w-4" />
+              <span className="text-gray-900 font-medium truncate">
+                {t(service.nameEn, service.nameMm)}
+              </span>
+            </nav>
+          </div>
         </div>
       </section>
 
-      <section className="section-padding">
-        <div className="container-custom">
-          <div className="max-w-3xl mx-auto">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+      {/* ============ MAIN CONTENT ============ */}
+      <section className="px-4 py-8 md:px-8 md:py-12 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12"
+          >
+            {/* ============ LEFT: MAIN CONTENT (3 cols) ============ */}
+            <div className="lg:col-span-3">
+              {/* Image */}
               {service.imageUrl && (
-                <img src={service.imageUrl} alt={t(service.nameEn, service.nameMm)} className="w-full rounded-2xl shadow-lg mb-8" />
+                <div className="mb-6 aspect-video overflow-hidden rounded-2xl border border-gray-100 shadow-sm bg-gray-100">
+                  <img
+                    src={service.imageUrl}
+                    alt={t(service.nameEn, service.nameMm)}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
               )}
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('About This Service', 'ဤဝန်ဆောင်မှုအကြောင်း')}</h2>
-              <p className="text-gray-600 leading-relaxed mb-8">
-                {t(service.fullDescriptionEn, service.fullDescriptionMm)}
-              </p>
 
-              <div className="bg-primary-50 rounded-2xl p-6 mb-8">
-                <h3 className="font-bold text-gray-900 mb-3">{t('What to Expect', 'ဘာကို မျှော်လင့်နိုင်သလဲ')}</h3>
-                <ul className="space-y-2">
-                  {[
-                    t('Professional consultation and examination', 'ပရော်ဖက်ရှင်နယ် ဆွေးနွေးခြင်းနှင့် စစ်ဆေးခြင်း'),
-                    t('Detailed treatment plan discussion', 'အသေးစိတ် ကုသမှုအစီအစဉ် ဆွေးနွေးခြင်း'),
-                    t('Comfortable and painless procedure', 'သက်တောင့်သက်သာနှင့် နာကျင်မှုမရှိသော လုပ်ငန်းစဉ်'),
-                    t('Post-treatment care instructions', 'ကုသမှုပြီးနောက် စောင့်ရှောက်မှု ညွှန်ကြားချက်များ'),
-                  ].map((item, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <CheckCircle className="w-5 h-5 text-primary-500 shrink-0 mt-0.5" />
-                      <span className="text-gray-700 text-sm">{item}</span>
+              {/* Category tag */}
+              <div className="mb-3">
+                <span className="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-green-700">
+                  {service.category}
+                </span>
+              </div>
+
+              {/* Title */}
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
+                {t(service.nameEn, service.nameMm)}
+              </h1>
+
+              {/* Description */}
+              <div className="mt-6 prose prose-gray max-w-none">
+                <p className="text-base leading-relaxed text-gray-600 md:text-lg whitespace-pre-line">
+                  {t(service.fullDescriptionEn, service.fullDescriptionMm)}
+                </p>
+              </div>
+
+              {/* What to Expect */}
+              <div className="mt-10 rounded-2xl border border-gray-100 bg-gray-50 p-6 md:p-8">
+                <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <Info className="h-5 w-5 text-green-600" />
+                  {t('What to Expect', 'ဘာကို မျှော်လင့်နိုင်သလဲ')}
+                </h2>
+                <ul className="mt-4 space-y-3">
+                  {expectations.map((item, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-green-100 mt-0.5">
+                        <CheckCircle className="h-4 w-4 text-green-600" />
+                      </div>
+                      <span className="text-base leading-relaxed text-gray-700">
+                        {item}
+                      </span>
                     </li>
                   ))}
                 </ul>
               </div>
+            </div>
 
-              <div className="bg-gray-50 rounded-2xl p-6 mb-8">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-sm text-gray-500">{t('Duration', 'ကြာချိန်')}</span>
-                    <div className="font-semibold text-gray-900">{service.durationMinutes} {t('minutes', 'မိနစ်')}</div>
+            {/* ============ RIGHT: STICKY BOOKING CARD (2 cols) ============ */}
+            <div className="lg:col-span-2">
+              <div className="lg:sticky lg:top-24 space-y-4">
+                {/* Booking card */}
+                <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm md:p-8">
+                  {/* Price */}
+                  <div className="pb-5 border-b border-gray-100">
+                    <div className="text-sm text-gray-500 font-medium">
+                      {t('Starting price', 'စတင်စျေးနှုန်း')}
+                    </div>
+                    <div className="mt-1 flex items-baseline gap-2">
+                      <span className="text-3xl md:text-4xl font-bold text-green-600">
+                        {formatPrice(service.startingPrice)}
+                      </span>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-sm text-gray-500">{t('Starting Price', 'စတင်စျေးနှုန်း')}</span>
-                    <div className="font-semibold text-primary-600">{formatPrice(service.startingPrice)}</div>
+
+                  {/* Meta info */}
+                  <div className="py-5 space-y-3 border-b border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-50">
+                        <Clock className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500">
+                          {t('Duration', 'ကြာချိန်')}
+                        </div>
+                        <div className="text-sm font-semibold text-gray-900">
+                          {service.durationMinutes} {t('minutes', 'မိနစ်')}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-50">
+                        <Stethoscope className="h-4 w-4 text-green-600" />
+                      </div>
+                      <div>
+                        <div className="text-xs text-gray-500">
+                          {t('Category', 'အမျိုးအစား')}
+                        </div>
+                        <div className="text-sm font-semibold text-gray-900">
+                          {service.category}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA buttons */}
+                  <div className="pt-5 space-y-2.5">
+                    <Link
+                      to="/appointment"
+                      className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-green-600 px-6 py-3 font-semibold text-white shadow-sm transition-all duration-200 hover:bg-green-700 hover:shadow-md active:scale-95"
+                    >
+                      <Calendar className="h-5 w-5" />
+                      {t('Book Appointment', 'ချိန်းဆိုရန်')}
+                    </Link>
+
+                    <a
+                      href="tel:095158726"
+                      className="w-full inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border-2 border-gray-200 px-6 py-3 font-semibold text-gray-700 transition-all duration-200 hover:border-green-600 hover:text-green-600"
+                    >
+                      <Phone className="h-5 w-5" />
+                      {t('Call to Book', 'ဖုန်းဖြင့် ချိန်းဆိုရန်')}
+                    </a>
+                  </div>
+
+                  {/* Trust note */}
+                  <p className="mt-4 text-xs text-center text-gray-500">
+                    {t(
+                      'Free consultation · No hidden fees',
+                      'အခမဲ့ တိုင်ပင်ဆွေးနွေး · ဝှက်ထားသော အခ မရှိ'
+                    )}
+                  </p>
+                </div>
+
+                {/* Help card */}
+                <div className="rounded-2xl border border-green-100 bg-green-50/50 p-5">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm">
+                      <Info className="h-5 w-5 text-green-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-gray-900">
+                        {t('Need help deciding?', 'အကူအညီ လိုအပ်ပါသလား?')}
+                      </h3>
+                      <p className="mt-1 text-xs leading-relaxed text-gray-600">
+                        {t(
+                          'Call us for a free consultation and personalized recommendation.',
+                          'အခမဲ့ တိုင်ပင်ရန် ဖုန်းခေါ်ပါ။'
+                        )}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              <div className="text-center">
-                <Link to="/appointment" className="btn-primary inline-flex items-center gap-2 text-lg">
-                  <Calendar className="w-5 h-5" />
-                  {t('Book This Service', 'ဤဝန်ဆောင်မှုကို ချိန်းဆိုရန်')}
-                </Link>
-              </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }
