@@ -39,7 +39,6 @@ export default function Navbar() {
       ? 'bg-orange-500'
       : 'bg-red-500';
 
-  // Shorten status message based on state
   const getShortStatus = () => {
     if (clinicStatus.status === 'OPEN') {
       return { en: 'Open', mm: 'ဖွင့်သည်' };
@@ -47,7 +46,6 @@ export default function Navbar() {
     if (clinicStatus.status === 'HOLIDAY') {
       return { en: 'Holiday', mm: 'ပိတ်ရက်' };
     }
-    // For closed, just show "Closed" without extra time info
     return { en: 'Closed', mm: 'ပိတ်သည်' };
   };
 
@@ -57,7 +55,7 @@ export default function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/95 backdrop-blur-md shadow-lg'
+          ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
           : 'bg-white/80 backdrop-blur-sm'
       }`}
     >
@@ -80,26 +78,29 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1 flex-1 justify-center">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
-                  location.pathname === link.path
-                    ? 'text-primary-700 bg-primary-50'
-                    : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
-                }`}
-              >
-                {t(link.labelEn, link.labelMm)}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = location.pathname === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`relative px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
+                    isActive
+                      ? 'text-primary-700 bg-primary-50'
+                      : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                  }`}
+                >
+                  {t(link.labelEn, link.labelMm)}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Right side */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
-            {/* Clinic Status Badge */}
+            {/* Clinic Status Badge - subtle dot, no pulse */}
             <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gray-50 border border-gray-100 whitespace-nowrap">
-              <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse shrink-0`} />
+              <div className={`w-2 h-2 rounded-full ${statusColor} shrink-0`} />
               <span className="text-xs font-medium text-gray-600">
                 {t(shortStatus.en, shortStatus.mm)}
               </span>
@@ -109,6 +110,7 @@ export default function Navbar() {
             <button
               onClick={toggleLanguage}
               className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-all text-xs font-medium whitespace-nowrap shrink-0"
+              aria-label={`Switch to ${language === 'en' ? 'Myanmar' : 'English'}`}
             >
               <Globe className="w-3.5 h-3.5" />
               {language === 'en' ? 'MM' : 'EN'}
@@ -137,6 +139,7 @@ export default function Navbar() {
               onClick={() => setIsOpen(!isOpen)}
               className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
               aria-label="Toggle menu"
+              aria-expanded={isOpen}
             >
               {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -151,33 +154,37 @@ export default function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-t border-gray-100 shadow-lg"
+            transition={{ duration: 0.2 }}
+            className="lg:hidden bg-white border-t border-gray-100 shadow-lg overflow-hidden"
           >
             <div className="container-custom py-4 space-y-1">
-              {/* Clinic status mobile - Full detail here since there's space */}
-              <div className="flex items-center gap-2 px-3 py-2 mb-2">
-                <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse shrink-0`} />
+              {/* Clinic status mobile */}
+              <div className="flex items-center gap-2 px-3 py-2 mb-2 rounded-lg bg-gray-50">
+                <div className={`w-2 h-2 rounded-full ${statusColor} shrink-0`} />
                 <span className="text-sm text-gray-600">
                   {t(clinicStatus.message, clinicStatus.messageMm)}
                 </span>
               </div>
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                    location.pathname === link.path
-                      ? 'text-primary-700 bg-primary-50'
-                      : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
-                  }`}
-                >
-                  {t(link.labelEn, link.labelMm)}
-                </Link>
-              ))}
-              <div className="pt-2 border-t border-gray-100 flex flex-col gap-2">
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.path}
+                    to={link.path}
+                    className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
+                      isActive
+                        ? 'text-primary-700 bg-primary-50'
+                        : 'text-gray-600 hover:text-primary-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    {t(link.labelEn, link.labelMm)}
+                  </Link>
+                );
+              })}
+              <div className="pt-3 mt-2 border-t border-gray-100 flex flex-col gap-2">
                 <a
                   href="tel:095158726"
-                  className="flex items-center gap-2 px-3 py-2.5 text-primary-600 font-medium text-sm"
+                  className="flex items-center gap-2 px-3 py-2.5 text-primary-600 font-medium text-sm rounded-lg hover:bg-primary-50 transition-colors"
                 >
                   <Phone className="w-4 h-4" /> 09 5158726
                 </a>

@@ -12,8 +12,6 @@ export default function PublicLayout() {
       </main>
       <Footer />
       <FloatingButtons />
-      {/* Spacer for mobile bottom bar */}
-      <div className="h-14 md:hidden" />
     </div>
   );
 }
