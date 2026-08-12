@@ -5,6 +5,7 @@ import { Toaster } from 'react-hot-toast';
 import PublicLayout from '@/layouts/PublicLayout';
 import AdminLayout from '@/layouts/AdminLayout';
 import ProtectedRoute from '@/router/ProtectedRoute';
+import ScrollToTop from '@/components/ScrollToTop';
 
 // Public Pages
 import HomePage from '@/pages/HomePage';
@@ -39,6 +40,7 @@ import AdminContactPage from './pages/admin/AdminContactPage';
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Toaster
         position="top-right"
         toastOptions={{
