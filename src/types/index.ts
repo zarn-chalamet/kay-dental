@@ -46,6 +46,14 @@ export interface DentalService {
   shortDescriptionMm?: string;
   fullDescriptionEn?: string;
   fullDescriptionMm?: string;
+  benefitsEn?: string;
+  benefitsMm?: string;
+  processEn?: string;
+  processMm?: string;
+  aftercareEn?: string;
+  aftercareMm?: string;
+  faqsEn?: string;
+  faqsMm?: string;
   startingPrice: number;
   durationMinutes: number;
   category: 'GENERAL' | 'COSMETIC' | 'ORTHODONTICS' | 'SURGERY' | 'PEDIATRIC' | 'EMERGENCY';

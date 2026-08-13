@@ -46,6 +46,14 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
     shortDescriptionMm: '',
     fullDescriptionEn: '',
     fullDescriptionMm: '',
+    benefitsEn: '',
+    benefitsMm: '',
+    processEn: '',
+    processMm: '',
+    aftercareEn: '',
+    aftercareMm: '',
+    faqsEn: '',
+    faqsMm: '',
     startingPrice: 0,
     durationMinutes: 30,
     category: 'GENERAL',
@@ -272,6 +280,129 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
                       onChange={(e) => setForm({ ...form, fullDescriptionMm: e.target.value })}
                       className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none"
                     />
+                  </div>
+
+                  {/* ============ RICH CONTENT SECTION ============ */}
+                  <div className="border-t border-gray-200 pt-6 mt-6">
+                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-1">
+                      Rich Content (Optional)
+                    </h3>
+                    <p className="text-xs text-gray-500 mb-4">
+                      Use one bullet per line. This info will show on the service detail page.
+                    </p>
+
+                    {/* Benefits */}
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Benefits (English) — Why patients need this
+                        </label>
+                        <textarea
+                          rows={4}
+                          placeholder="Prevents cavities&#10;Fresh breath&#10;Saves money long-term"
+                          value={form.benefitsEn || ''}
+                          onChange={(e) => setForm({ ...form, benefitsEn: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">One benefit per line</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Benefits (Myanmar)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={form.benefitsMm || ''}
+                          onChange={(e) => setForm({ ...form, benefitsMm: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                      </div>
+
+                      {/* Process */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Our Process (English) — Step by step how you treat
+                        </label>
+                        <textarea
+                          rows={4}
+                          placeholder="Initial consultation&#10;Professional cleaning&#10;Polishing&#10;Aftercare advice"
+                          value={form.processEn || ''}
+                          onChange={(e) => setForm({ ...form, processEn: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">One step per line (will be numbered automatically)</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Our Process (Myanmar)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={form.processMm || ''}
+                          onChange={(e) => setForm({ ...form, processMm: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                      </div>
+
+                      {/* Aftercare */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Aftercare Tips (English)
+                        </label>
+                        <textarea
+                          rows={4}
+                          placeholder="Brush twice daily&#10;Floss regularly&#10;Avoid hard foods for 24 hours"
+                          value={form.aftercareEn || ''}
+                          onChange={(e) => setForm({ ...form, aftercareEn: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">One tip per line</p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Aftercare Tips (Myanmar)
+                        </label>
+                        <textarea
+                          rows={4}
+                          value={form.aftercareMm || ''}
+                          onChange={(e) => setForm({ ...form, aftercareMm: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                      </div>
+
+                      {/* FAQs */}
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          FAQs (English)
+                        </label>
+                        <textarea
+                          rows={6}
+                          placeholder="Q: Does it hurt?&#10;A: No, we use modern painless techniques.&#10;&#10;Q: How long does it take?&#10;A: About 30 minutes."
+                          value={form.faqsEn || ''}
+                          onChange={(e) => setForm({ ...form, faqsEn: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">
+                          Format: "Q: question" then "A: answer". Separate each FAQ with a blank line.
+                        </p>
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          FAQs (Myanmar)
+                        </label>
+                        <textarea
+                          rows={6}
+                          placeholder="မေး: နာကျင်ပါသလား?&#10;ဖြေ: မနာကျင်ပါ။"
+                          value={form.faqsMm || ''}
+                          onChange={(e) => setForm({ ...form, faqsMm: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        />
+                      </div>
+                    </div>
                   </div>
 
                   {/* Category & Icon */}
