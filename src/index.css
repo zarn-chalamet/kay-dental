@@ -2,6 +2,65 @@
 @import "tailwindcss";
 
 /* ============================================ */
+/* SWIPER BANNER - CUSTOM STYLES                */
+/* ============================================ */
+
+/* Hide Swiper default navigation arrows (we use custom buttons) */
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  display: none !important;
+  content: '' !important;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  background: none !important;
+  width: auto !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+/* KAY Banner - Custom pagination dots */
+.kay-bullet {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.kay-bullet:hover {
+  background: rgba(255, 255, 255, 0.85);
+  transform: scale(1.2);
+}
+
+.kay-bullet-active {
+  width: 28px;
+  background: #facc15;
+}
+
+/* Pagination position inside banner */
+.swiper-pagination {
+  position: absolute;
+  bottom: 16px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 10;
+  width: auto !important;
+  line-height: 0;
+}
+
+/* Fix for testimonials swiper pagination (below the cards) */
+.testimonials-swiper .swiper-pagination {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: 24px;
+}
+
+/* ============================================ */
 /* PYIDAUNGSU FONT - Local (Self-hosted)        */
 /* ============================================ */
 @font-face {
