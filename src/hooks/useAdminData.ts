@@ -120,39 +120,35 @@ export const usePendingAppointmentsCount = () => {
       const result = await adminAppointmentApi.getAll({
         status: 'PENDING',
         page: 0,
-        size: 1, // We only need the count, not the data
+        size: 1,
       });
       return result.totalElements;
     },
-    refetchInterval: 30_000, // 30 seconds
-    refetchOnWindowFocus: true, // refetch when admin comes back to tab
+    refetchInterval: 30_000,
+    refetchOnWindowFocus: true,
     staleTime: 15_000,
   });
 };
 
 /**
  * Unread messages count (for sidebar badge)
- * Returns 0 gracefully if messages endpoint doesn't exist yet
+ * Uses dedicated endpoint for better performance
  */
 export const useUnreadMessagesCount = () => {
   return useQuery({
     queryKey: ['admin', 'notifications', 'unread-messages'],
     queryFn: async () => {
       try {
-        const result = await adminContactApi.getAll(0, 100);
-        // Count unread messages from the response
-        const unreadCount = result.content.filter((msg) => !msg.isRead).length;
-        return unreadCount;
+        return await adminContactApi.getUnreadCount();
       } catch (error) {
-        // Messages backend not ready yet — return 0
-        console.warn('Messages endpoint not available yet');
+        console.warn('Unread messages endpoint not available');
         return 0;
       }
     },
     refetchInterval: 30_000,
     refetchOnWindowFocus: true,
     staleTime: 15_000,
-    retry: false, // Don't retry if endpoint doesn't exist
+    retry: false,
   });
 };
 
@@ -164,25 +160,21 @@ export const useRecentNotifications = () => {
   return useQuery({
     queryKey: ['admin', 'notifications', 'recent'],
     queryFn: async () => {
-      // Fetch recent pending appointments
       const appointmentsPromise = adminAppointmentApi.getAll({
         status: 'PENDING',
         page: 0,
         size: 5,
       });
 
-      // Fetch recent unread messages (gracefully fail if not ready)
       const messagesPromise = adminContactApi
-        .getAll(0, 5)
-        .then((result) => result.content.filter((m) => !m.isRead))
-        .catch(() => []); // Empty array if endpoint doesn't exist
+        .getRecentUnread()
+        .catch(() => []);
 
       const [appointmentsResult, unreadMessages] = await Promise.all([
         appointmentsPromise,
         messagesPromise,
       ]);
 
-      // Combine into unified notification list
       const notifications = [
         ...appointmentsResult.content.map((apt) => ({
           id: `apt-${apt.id}`,
@@ -206,7 +198,7 @@ export const useRecentNotifications = () => {
         (a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()
       );
 
-      return notifications.slice(0, 10); // Return top 10
+      return notifications.slice(0, 10);
     },
     refetchInterval: 30_000,
     refetchOnWindowFocus: true,

@@ -268,6 +268,16 @@ export const adminContactApi = {
     return response.data.data;
   },
 
+  getUnreadCount: async (): Promise<number> => {
+    const response = await axiosInstance.get<ApiResponse<number>>('/admin/messages/unread-count');
+    return response.data.data;
+  },
+
+  getRecentUnread: async (): Promise<ContactMessage[]> => {
+    const response = await axiosInstance.get<ApiResponse<ContactMessage[]>>('/admin/messages/unread');
+    return response.data.data;
+  },
+
   markAsRead: async (id: number): Promise<void> => {
     await axiosInstance.patch(`/admin/messages/${id}/read`);
   },
