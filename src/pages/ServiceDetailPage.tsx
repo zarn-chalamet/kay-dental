@@ -77,8 +77,8 @@ export default function ServiceDetailPage() {
   if (isLoading) {
     return (
       <main className="bg-white pt-20 font-sans">
-        <div className="px-4 py-8 md:px-8 md:py-12 lg:px-12">
-          <div className="mx-auto max-w-7xl">
+        <div className="py-8 md:py-12">
+          <div className="container-custom">
             <div className="h-4 w-48 rounded bg-gray-100 animate-pulse mb-8" />
             <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
               <div className="lg:col-span-3">
@@ -140,8 +140,8 @@ export default function ServiceDetailPage() {
     <main className="bg-white pt-20 font-sans">
       {/* ============ BREADCRUMB ============ */}
       <section className="border-b border-gray-100 bg-gray-50/50">
-        <div className="px-4 py-4 md:px-8 md:py-5 lg:px-12">
-          <div className="mx-auto max-w-7xl">
+        <div className="py-4 md:py-5">
+          <div className="container-custom">
             <nav className="flex items-center gap-1.5 text-sm text-gray-500" aria-label="Breadcrumb">
               <Link to="/" className="hover:text-green-600 transition-colors">
                 {t('Home', 'ပင်မ')}
@@ -160,8 +160,8 @@ export default function ServiceDetailPage() {
       </section>
 
       {/* ============ MAIN CONTENT ============ */}
-      <section className="px-4 py-8 md:px-8 md:py-12 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-8 md:py-12">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"

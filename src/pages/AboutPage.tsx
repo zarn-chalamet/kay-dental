@@ -131,7 +131,7 @@ export default function AboutPage() {
           <div className="absolute bottom-0 left-1/3 h-32 w-32 rounded-full bg-green-200/50 blur-2xl" />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 md:px-8 lg:px-12 text-center w-full">
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center w-full">
           <motion.div variants={fadeUp} initial="hidden" animate="show">
             <span className={badgeClassName}>
               <Sparkles className="h-3.5 w-3.5" />
@@ -180,8 +180,8 @@ export default function AboutPage() {
       </header>
 
       {/* ============ OUR STORY ============ */}
-      <section id="story" className="px-4 py-16 md:px-8 md:py-24 lg:px-12 scroll-mt-24">
-        <div className="mx-auto max-w-7xl">
+      <section id="story" className="py-16 md:py-24 scroll-mt-24">
+        <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Image */}
             <motion.div
@@ -283,8 +283,8 @@ export default function AboutPage() {
       </section>
 
       {/* ============ STATS SECTION ============ */}
-      <section className="px-4 py-12 md:px-8 md:py-16 lg:px-12 bg-gray-50 border-y border-gray-100">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-12 md:py-16 bg-gray-50 border-y border-gray-100">
+        <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, i) => (
               <motion.div
@@ -311,8 +311,8 @@ export default function AboutPage() {
       </section>
 
       {/* ============ MISSION VISION VALUES ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-24 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -363,8 +363,8 @@ export default function AboutPage() {
       </section>
 
       {/* ============ WHAT SETS US APART ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-24 lg:px-12 bg-gray-50">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-24 bg-gray-50">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -410,8 +410,8 @@ export default function AboutPage() {
       </section>
 
       {/* ============ CTA ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-24 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"

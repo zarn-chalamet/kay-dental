@@ -59,7 +59,7 @@ export default function DoctorsPage() {
           <div className="absolute bottom-0 left-1/3 h-32 w-32 rounded-full bg-green-200/50 blur-2xl" />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 md:px-8 lg:px-12 text-center w-full">
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center w-full">
           <motion.div variants={fadeUp} initial="hidden" animate="show">
             <span className={badgeClassName}>
               <Sparkles className="h-3.5 w-3.5" />
@@ -122,8 +122,8 @@ export default function DoctorsPage() {
       </header>
 
       {/* ============ DOCTORS SECTION ============ */}
-      <section id="doctors" className="px-4 py-16 md:px-8 md:py-20 lg:px-12 scroll-mt-24">
-        <div className="mx-auto max-w-7xl">
+      <section id="doctors" className="py-16 md:py-20 scroll-mt-24">
+        <div className="container-custom">
           {/* Section header */}
           <motion.div
             variants={fadeUp}
@@ -302,8 +302,8 @@ export default function DoctorsPage() {
       </section>
 
       {/* ============ CTA SECTION ============ */}
-      <section className="px-4 pb-16 md:px-8 md:pb-24 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="pb-16 md:pb-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"

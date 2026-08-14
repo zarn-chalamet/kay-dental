@@ -133,11 +133,11 @@ export default function HomePage() {
       {/* ============ BANNER CAROUSEL ============ */}
       <section className="relative pt-20 bg-white">
         {isLoading ? (
-          <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12 py-6 md:py-8">
+          <div className="container-custom py-6 md:py-8">
             <div className="w-full h-[400px] md:h-[520px] bg-gradient-to-br from-green-50 via-white to-yellow-50 animate-pulse rounded-3xl" />
           </div>
         ) : banners.length > 0 ? (
-          <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12 py-6 md:py-8">
+          <div className="container-custom py-6 md:py-8">
             <div className="relative group">
               <Swiper
                 modules={[Autoplay, Pagination, Navigation]}
@@ -208,7 +208,6 @@ export default function HomePage() {
                 ))}
               </Swiper>
 
-              {/* Navigation Arrows - Desktop only, show on hover */}
               {banners.length > 1 && (
                 <>
                   <button
@@ -238,8 +237,8 @@ export default function HomePage() {
           <div className="absolute bottom-0 left-1/3 h-32 w-32 rounded-full bg-green-200/50 blur-2xl" />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 md:px-8 lg:px-12 text-center">
-          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }}>
+        <div className="container-custom relative text-center">
+          <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="mx-auto max-w-5xl">
             <span className={badgeClassName}>
               <Sparkles className="h-3.5 w-3.5" />
               {t('Welcome to KAY Dental', 'ကြိုဆိုပါသည်')}
@@ -274,7 +273,6 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Trust indicators */}
             <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-500">
               <div className="flex items-center gap-1.5">
                 <CheckCircle className="h-4 w-4 text-green-600" />
@@ -294,8 +292,8 @@ export default function HomePage() {
       </section>
 
       {/* ============ STATS ============ */}
-      <section className="px-4 py-12 md:px-8 md:py-16 lg:px-12 bg-gray-50 border-y border-gray-100">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-12 md:py-16 bg-gray-50 border-y border-gray-100">
+        <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: Award, value: 15, suffix: '+', labelEn: 'Years Experience', labelMm: 'နှစ်' },
@@ -325,8 +323,8 @@ export default function HomePage() {
       </section>
 
       {/* ============ SERVICES PREVIEW ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-20">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -399,8 +397,8 @@ export default function HomePage() {
       </section>
 
       {/* ============ WHY CHOOSE US ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12 bg-gray-50">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-20 bg-gray-50">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -479,8 +477,8 @@ export default function HomePage() {
 
       {/* ============ DOCTORS PREVIEW ============ */}
       {doctors.length > 0 && (
-        <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12">
-          <div className="mx-auto max-w-7xl">
+        <section className="py-16 md:py-20">
+          <div className="container-custom">
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -569,8 +567,8 @@ export default function HomePage() {
 
       {/* ============ TESTIMONIALS ============ */}
       {testimonials.length > 0 && (
-        <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12 bg-gray-50">
-          <div className="mx-auto max-w-7xl">
+        <section className="py-16 md:py-20 bg-gray-50">
+          <div className="container-custom">
             <motion.div
               variants={fadeUp}
               initial="hidden"
@@ -655,8 +653,8 @@ export default function HomePage() {
       )}
 
       {/* ============ EMERGENCY BANNER ============ */}
-      <section className="px-4 py-12 md:px-8 md:py-16 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-12 md:py-16">
+        <div className="container-custom">
           <div className="rounded-3xl border-2 border-red-100 bg-gradient-to-br from-red-50 via-white to-red-50 p-6 md:p-8">
             <div className="flex flex-col md:flex-row items-center justify-between gap-6">
               <div className="flex items-center gap-4">
@@ -699,8 +697,8 @@ export default function HomePage() {
       </section>
 
       {/* ============ LOCATION SECTION ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12 bg-gray-50">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-20 bg-gray-50">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -724,7 +722,6 @@ export default function HomePage() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
-            {/* Info card - LEFT (2 cols) */}
             <div className="relative flex flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-green-600 via-green-600 to-green-700 p-8 text-white shadow-sm md:p-10 lg:col-span-2">
               <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-400/20 blur-3xl" />
               <div className="absolute -bottom-10 -left-10 h-40 w-40 rounded-full bg-green-400/30 blur-3xl" />
@@ -793,7 +790,6 @@ export default function HomePage() {
               </a>
             </div>
 
-            {/* Map - RIGHT (3 cols) */}
             <div className="relative overflow-hidden rounded-2xl border border-gray-100 bg-gray-100 shadow-sm lg:col-span-3 min-h-[400px] lg:min-h-[500px]">
               {googleMapsEmbedUrl ? (
                 <iframe
@@ -829,80 +825,82 @@ export default function HomePage() {
 
       {/* ============ FAQ PREVIEW ============ */}
       {faqs.length > 0 && (
-        <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12">
-          <div className="mx-auto max-w-4xl">
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.2 }}
-              className="mx-auto mb-10 max-w-3xl text-center"
-            >
-              <span className={badgeClassName}>
-                {t('FAQ', 'မေးခွန်း')}
-              </span>
-              <h2 className="mt-4 text-2xl font-bold text-gray-900 md:text-3xl">
-                {t('Frequently Asked Questions', 'မကြာခဏ မေးလေ့ရှိသော မေးခွန်းများ')}
-              </h2>
-              <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-gray-600">
-                {t(
-                  'Quick answers to common questions.',
-                  'အသုံးများသော မေးခွန်းများ၏ အဖြေများ။'
-                )}
-              </p>
-            </motion.div>
-
-            <div className="space-y-3">
-              {faqs.slice(0, 5).map((faq) => (
-                <motion.div
-                  key={faq.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  className="rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <button
-                    onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id!)}
-                    className="w-full flex items-center justify-between gap-3 p-5 text-left"
-                  >
-                    <span className="font-semibold text-gray-900">
-                      {t(faq.questionEn, faq.questionMm)}
-                    </span>
-                    <ChevronDown
-                      className={`h-5 w-5 text-gray-400 shrink-0 transition-transform ${
-                        openFaq === faq.id ? 'rotate-180 text-green-600' : ''
-                      }`}
-                    />
-                  </button>
-                  {openFaq === faq.id && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      className="px-5 pb-5 text-base leading-relaxed text-gray-600"
-                    >
-                      {t(faq.answerEn, faq.answerMm)}
-                    </motion.div>
-                  )}
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-10 text-center">
-              <Link
-                to="/faq"
-                className="inline-flex items-center gap-2 rounded-xl border-2 border-green-600 px-6 py-3 font-semibold text-green-600 transition-all duration-200 hover:bg-green-600 hover:text-white"
+        <section className="py-16 md:py-20">
+          <div className="container-custom">
+            <div className="mx-auto max-w-4xl">
+              <motion.div
+                variants={fadeUp}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.2 }}
+                className="mx-auto mb-10 max-w-3xl text-center"
               >
-                {t('View All FAQs', 'မေးခွန်းအားလုံး')}
-                <ArrowRight className="w-4 h-4" />
-              </Link>
+                <span className={badgeClassName}>
+                  {t('FAQ', 'မေးခွန်း')}
+                </span>
+                <h2 className="mt-4 text-2xl font-bold text-gray-900 md:text-3xl">
+                  {t('Frequently Asked Questions', 'မကြာခဏ မေးလေ့ရှိသော မေးခွန်းများ')}
+                </h2>
+                <p className="mx-auto mt-3 max-w-2xl text-base leading-relaxed text-gray-600">
+                  {t(
+                    'Quick answers to common questions.',
+                    'အသုံးများသော မေးခွန်းများ၏ အဖြေများ။'
+                  )}
+                </p>
+              </motion.div>
+
+              <div className="space-y-3">
+                {faqs.slice(0, 5).map((faq) => (
+                  <motion.div
+                    key={faq.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="rounded-2xl border border-gray-100 bg-white shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    <button
+                      onClick={() => setOpenFaq(openFaq === faq.id ? null : faq.id!)}
+                      className="w-full flex items-center justify-between gap-3 p-5 text-left"
+                    >
+                      <span className="font-semibold text-gray-900">
+                        {t(faq.questionEn, faq.questionMm)}
+                      </span>
+                      <ChevronDown
+                        className={`h-5 w-5 text-gray-400 shrink-0 transition-transform ${
+                          openFaq === faq.id ? 'rotate-180 text-green-600' : ''
+                        }`}
+                      />
+                    </button>
+                    {openFaq === faq.id && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        className="px-5 pb-5 text-base leading-relaxed text-gray-600"
+                      >
+                        {t(faq.answerEn, faq.answerMm)}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-10 text-center">
+                <Link
+                  to="/faq"
+                  className="inline-flex items-center gap-2 rounded-xl border-2 border-green-600 px-6 py-3 font-semibold text-green-600 transition-all duration-200 hover:bg-green-600 hover:text-white"
+                >
+                  {t('View All FAQs', 'မေးခွန်းအားလုံး')}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
       )}
 
       {/* ============ FINAL CTA ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-24 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"

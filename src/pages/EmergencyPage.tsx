@@ -82,7 +82,7 @@ export default function EmergencyPage() {
           <div className="absolute bottom-0 left-1/3 h-32 w-32 rounded-full bg-green-200/50 blur-2xl" />
         </div>
 
-        <div className="relative mx-auto max-w-5xl px-4 md:px-8 lg:px-12 text-center w-full">
+        <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center w-full">
           <motion.div variants={fadeUp} initial="hidden" animate="show">
             {/* Subtle alert badge - not scary */}
             <span className="inline-flex items-center gap-2 rounded-full bg-orange-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-orange-700">
@@ -138,8 +138,8 @@ export default function EmergencyPage() {
       </header>
 
       {/* ============ EMERGENCY SYMPTOMS ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-20 lg:px-12 bg-gray-50">
-        <div className="mx-auto max-w-6xl">
+      <section className="py-16 md:py-20 bg-gray-50">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -186,8 +186,8 @@ export default function EmergencyPage() {
       </section>
 
       {/* ============ FIRST AID STEPS ============ */}
-      <section id="first-aid" className="px-4 py-16 md:px-8 md:py-20 lg:px-12 scroll-mt-24">
-        <div className="mx-auto max-w-6xl">
+      <section id="first-aid" className="py-16 md:py-20 scroll-mt-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -252,8 +252,8 @@ export default function EmergencyPage() {
       </section>
 
       {/* ============ HONEST AVAILABILITY + LOCATION ============ */}
-      <section className="px-4 pb-16 md:px-8 md:pb-20 lg:px-12">
-        <div className="mx-auto max-w-6xl">
+      <section className="pb-16 md:pb-20">
+        <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Availability card - HONEST */}
             <motion.div
@@ -327,8 +327,8 @@ export default function EmergencyPage() {
       </section>
 
       {/* ============ FINAL CTA - CALM GREEN ============ */}
-      <section className="px-4 pb-16 md:px-8 md:pb-24 lg:px-12">
-        <div className="mx-auto max-w-6xl">
+      <section className="pb-16 md:pb-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"

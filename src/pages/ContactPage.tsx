@@ -126,7 +126,7 @@ export default function ContactPage() {
           <div className="absolute bottom-0 left-1/3 h-32 w-32 rounded-full bg-green-200/50 blur-2xl" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 md:px-8 lg:px-12">
+        <div className="relative container-custom px-4 md:px-8 lg:px-12">
           <motion.div
             variants={fadeUp}
             initial="hidden"
@@ -212,8 +212,8 @@ export default function ContactPage() {
       </header>
 
       {/* ============ CONTACT INFO + FORM ============ */}
-      <section className="px-4 py-16 md:px-8 md:py-24 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="py-16 md:py-24">
+        <div className="container-custom">
           <div className="mx-auto mb-12 max-w-3xl text-center">
             <span className={badgeClassName}>
               {t('Get in touch', 'ဆက်သွယ်ပါ')}
@@ -613,8 +613,8 @@ export default function ContactPage() {
       </section>
 
       {/* ============ LOCATION / MAP SECTION ============ */}
-      <section className="px-4 pb-16 md:px-8 md:pb-24 lg:px-12">
-        <div className="mx-auto max-w-7xl">
+      <section className="pb-16 md:pb-24">
+        <div className="container-custom">
           <motion.div
             variants={fadeUp}
             initial="hidden"

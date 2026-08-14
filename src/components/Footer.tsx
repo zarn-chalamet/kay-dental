@@ -41,7 +41,7 @@ export default function Footer() {
   return (
     <footer className="bg-gray-100 border-t border-gray-200">
       {/* Main Footer */}
-      <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12 py-16 md:py-20">
+      <div className="container-custom py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12">
           {/* ============ BRAND + CTA (5 cols) ============ */}
           <div className="md:col-span-5">
@@ -119,7 +119,7 @@ export default function Footer() {
             )}
           </div>
 
-          {/* ============ EXPLORE (3 cols) - 2 cols on mobile, 1 col on desktop ============ */}
+          {/* ============ EXPLORE (3 cols) ============ */}
           <div className="md:col-span-3">
             <h3 className="text-xs font-semibold text-gray-900 uppercase tracking-wider">
               {t('Explore', 'ရှာဖွေရန်')}
@@ -277,7 +277,7 @@ export default function Footer() {
 
       {/* ============ BOTTOM BAR ============ */}
       <div className="border-t border-gray-200">
-        <div className="mx-auto max-w-7xl px-4 md:px-8 lg:px-12 py-5">
+        <div className="container-custom py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-gray-500 text-center sm:text-left">
               © {currentYear} KAY Dental Care.{' '}

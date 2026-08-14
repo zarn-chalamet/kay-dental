@@ -251,7 +251,7 @@ export default function AppointmentPage() {
   // ============ MAIN BOOKING FLOW ============
   return (
     <main className="bg-gradient-to-b from-gray-50 to-white pt-20 font-sans min-h-screen">
-      <div className="mx-auto max-w-4xl px-4 py-8 md:px-8 md:py-12 lg:px-12">
+      <div className="mx-auto max-w-4xl py-8 md:py-12">
         {/* ============ HEADER ============ */}
         <div className="text-center mb-8 md:mb-12">
           <span className={badgeClassName}>
