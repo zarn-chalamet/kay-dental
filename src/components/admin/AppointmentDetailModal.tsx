@@ -73,8 +73,12 @@ export default function AppointmentDetailModal({
     try {
       await adminAppointmentApi.updateStatus(appointment.id, status, adminNotes);
       toast.success('Appointment updated successfully');
+      
+      // Invalidate all related queries to refresh UI
       queryClient.invalidateQueries({ queryKey: ['admin', 'appointments'] });
       queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'notifications'] });
+      
       onClose();
     } catch (error) {
       console.error('Update failed:', error);
