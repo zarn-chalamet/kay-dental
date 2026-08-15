@@ -1,5 +1,19 @@
 import { useState, useEffect } from 'react';
-import { X, Loader2 } from 'lucide-react';
+import {
+  X,
+  Loader2,
+  ChevronLeft,
+  Save,
+  Stethoscope,
+  Sparkles,
+  FileText,
+  DollarSign,
+  Tag,
+  ListChecks,
+  Heart,
+  HelpCircle,
+  Award,
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ImageUpload from '@/components/ImageUpload';
 import { adminServiceApi, uploadApi } from '@/api/adminApi';
@@ -35,53 +49,88 @@ const ICON_OPTIONS = [
   { value: 'AlertTriangle', label: '⚠️ Alert Triangle' },
 ];
 
-export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFormModalProps) {
+// Reusable classes
+const inputClassName =
+  'h-10 sm:h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20';
+
+const textareaClassName =
+  'w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 resize-none';
+
+const monoTextareaClassName = `${textareaClassName} font-mono`;
+
+const labelClassName = 'block mb-1.5 text-sm font-semibold text-gray-700';
+
+// Section component
+function FormSection({
+  icon: Icon,
+  title,
+  description,
+  children,
+}: {
+  icon: React.ElementType;
+  title: string;
+  description?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-3">
+      <div className="flex items-start gap-2 pb-1.5 border-b border-gray-100">
+        <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-green-100 mt-0.5">
+          <Icon className="w-3 h-3 text-green-600" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-xs font-bold text-gray-900 uppercase tracking-wide">
+            {title}
+          </h3>
+          {description && (
+            <p className="mt-0.5 text-[11px] text-gray-500">{description}</p>
+          )}
+        </div>
+      </div>
+      <div className="space-y-3">{children}</div>
+    </div>
+  );
+}
+
+const DEFAULT_FORM: Partial<DentalService> = {
+  nameEn: '',
+  nameMm: '',
+  shortDescriptionEn: '',
+  shortDescriptionMm: '',
+  fullDescriptionEn: '',
+  fullDescriptionMm: '',
+  benefitsEn: '',
+  benefitsMm: '',
+  processEn: '',
+  processMm: '',
+  aftercareEn: '',
+  aftercareMm: '',
+  faqsEn: '',
+  faqsMm: '',
+  startingPrice: 0,
+  durationMinutes: 30,
+  category: 'GENERAL',
+  iconName: 'Stethoscope',
+  imageUrl: '',
+  displayOrder: 0,
+  isActive: true,
+};
+
+export default function ServiceFormModal({
+  isOpen,
+  onClose,
+  service,
+}: ServiceFormModalProps) {
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [form, setForm] = useState<Partial<DentalService>>({
-    nameEn: '',
-    nameMm: '',
-    shortDescriptionEn: '',
-    shortDescriptionMm: '',
-    fullDescriptionEn: '',
-    fullDescriptionMm: '',
-    benefitsEn: '',
-    benefitsMm: '',
-    processEn: '',
-    processMm: '',
-    aftercareEn: '',
-    aftercareMm: '',
-    faqsEn: '',
-    faqsMm: '',
-    startingPrice: 0,
-    durationMinutes: 30,
-    category: 'GENERAL',
-    iconName: 'Stethoscope',
-    imageUrl: '',
-    displayOrder: 0,
-    isActive: true,
-  });
+  const [form, setForm] = useState<Partial<DentalService>>(DEFAULT_FORM);
 
   useEffect(() => {
     if (service) {
       setForm(service);
     } else {
-      setForm({
-        nameEn: '',
-        nameMm: '',
-        shortDescriptionEn: '',
-        shortDescriptionMm: '',
-        fullDescriptionEn: '',
-        fullDescriptionMm: '',
-        startingPrice: 0,
-        durationMinutes: 30,
-        category: 'GENERAL',
-        iconName: 'Stethoscope',
-        imageUrl: '',
-        displayOrder: 0,
-        isActive: true,
-      });
+      setForm(DEFAULT_FORM);
     }
     setImageFile(null);
   }, [service, isOpen]);
@@ -93,7 +142,6 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
     try {
       let imageUrl = form.imageUrl;
 
-      // Upload image only if new file selected
       if (imageFile) {
         try {
           toast.loading('Uploading image...', { id: 'upload' });
@@ -118,7 +166,7 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
         await adminServiceApi.create(dataToSave);
         toast.success('Service created successfully');
       }
-      
+
       queryClient.invalidateQueries({ queryKey: ['admin', 'services'] });
       queryClient.invalidateQueries({ queryKey: ['services'] });
       onClose();
@@ -138,6 +186,7 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
   };
 
   const handleClose = () => {
+    if (isSubmitting) return;
     setImageFile(null);
     onClose();
   };
@@ -151,379 +200,522 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/50 z-50"
+            className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50"
           />
-          
+
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            initial={{ opacity: 0, y: '100%' }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: '100%' }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 pointer-events-none"
           >
-            <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden pointer-events-auto flex flex-col">
-              {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                <h2 className="text-xl font-bold text-gray-900">
-                  {service ? 'Edit Service' : 'Add New Service'}
-                </h2>
+            <div
+              className="
+                bg-white w-full sm:max-w-2xl 
+                sm:rounded-2xl rounded-t-2xl
+                sm:max-h-[90vh] max-h-[95vh]
+                overflow-hidden pointer-events-auto 
+                flex flex-col shadow-2xl
+              "
+            >
+              {/* ============ HEADER ============ */}
+              <div className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 border-b border-gray-100 bg-gradient-to-br from-green-50/50 to-white shrink-0">
+                <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+                  <button
+                    onClick={handleClose}
+                    disabled={isSubmitting}
+                    className="sm:hidden p-1.5 -ml-1.5 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 shrink-0"
+                    aria-label="Close"
+                  >
+                    <ChevronLeft className="w-5 h-5 text-gray-600" />
+                  </button>
+                  <div className="hidden sm:flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white shadow-sm shrink-0">
+                    {service ? (
+                      <Stethoscope className="w-5 h-5" />
+                    ) : (
+                      <Sparkles className="w-5 h-5" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="text-base sm:text-lg font-bold text-gray-900 truncate">
+                      {service ? 'Edit Service' : 'Add New Service'}
+                    </h2>
+                    <p className="hidden sm:block text-xs text-gray-500 mt-0.5 truncate">
+                      {service
+                        ? `Editing ${service.nameEn}`
+                        : 'Add a new dental service to your catalog'}
+                    </p>
+                  </div>
+                </div>
                 <button
                   onClick={handleClose}
-                  className="p-1 rounded-lg hover:bg-gray-100 transition-colors"
+                  disabled={isSubmitting}
+                  className="hidden sm:flex p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50 shrink-0"
+                  aria-label="Close"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
-                <div className="p-6 space-y-4">
+              {/* ============ FORM BODY ============ */}
+              <form
+                onSubmit={handleSubmit}
+                className="flex-1 overflow-y-auto"
+                aria-busy={isSubmitting}
+              >
+                <div className="p-4 sm:p-6 space-y-5 sm:space-y-6">
                   {/* Service Image */}
-                  <ImageUpload
-                    value={form.imageUrl}
-                    onChange={handleImageChange}
-                    label="Service Image (Optional)"
-                  />
+                  <FormSection icon={Stethoscope} title="Service Image">
+                    <ImageUpload
+                      value={form.imageUrl}
+                      onChange={handleImageChange}
+                      label=""
+                    />
+                  </FormSection>
 
-                  {/* Names */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Name (English) *
-                      </label>
-                      <input
-                        type="text"
-                        required
-                        value={form.nameEn || ''}
-                        onChange={(e) => setForm({ ...form, nameEn: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      />
+                  {/* Basic Info */}
+                  <FormSection icon={FileText} title="Basic Information">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelClassName}>
+                          Name (English) <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={form.nameEn || ''}
+                          onChange={(e) =>
+                            setForm({ ...form, nameEn: e.target.value })
+                          }
+                          className={inputClassName}
+                          placeholder="e.g., Teeth Cleaning"
+                        />
+                      </div>
+                      <div>
+                        <label className={labelClassName}>Name (Myanmar)</label>
+                        <input
+                          type="text"
+                          value={form.nameMm || ''}
+                          onChange={(e) =>
+                            setForm({ ...form, nameMm: e.target.value })
+                          }
+                          className={inputClassName}
+                          placeholder="သွားသန့်စင်ခြင်း"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Name (Myanmar)
-                      </label>
-                      <input
-                        type="text"
-                        value={form.nameMm || ''}
-                        onChange={(e) => setForm({ ...form, nameMm: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      />
-                    </div>
-                  </div>
 
-                  {/* Slug (readonly for existing services) */}
-                  {service?.slug && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Slug (URL)
-                      </label>
-                      <input
-                        type="text"
-                        disabled
-                        value={service.slug}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-gray-50 text-gray-500 outline-none"
-                      />
-                      <p className="text-xs text-gray-400 mt-1">Auto-generated from name (cannot be changed)</p>
-                    </div>
-                  )}
-
-                  {/* Short Description */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Short Description (English) *
-                    </label>
-                    <textarea
-                      required
-                      rows={2}
-                      maxLength={300}
-                      placeholder="Brief description for cards (max 300 chars)"
-                      value={form.shortDescriptionEn || ''}
-                      onChange={(e) => setForm({ ...form, shortDescriptionEn: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">{(form.shortDescriptionEn || '').length}/300 characters</p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Short Description (Myanmar)
-                    </label>
-                    <textarea
-                      rows={2}
-                      maxLength={300}
-                      value={form.shortDescriptionMm || ''}
-                      onChange={(e) => setForm({ ...form, shortDescriptionMm: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none"
-                    />
-                  </div>
-
-                  {/* Full Description */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Description (English)
-                    </label>
-                    <textarea
-                      rows={4}
-                      placeholder="Detailed description for service page"
-                      value={form.fullDescriptionEn || ''}
-                      onChange={(e) => setForm({ ...form, fullDescriptionEn: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Full Description (Myanmar)
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={form.fullDescriptionMm || ''}
-                      onChange={(e) => setForm({ ...form, fullDescriptionMm: e.target.value })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none"
-                    />
-                  </div>
-
-                  {/* ============ RICH CONTENT SECTION ============ */}
-                  <div className="border-t border-gray-200 pt-6 mt-6">
-                    <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-1">
-                      Rich Content (Optional)
-                    </h3>
-                    <p className="text-xs text-gray-500 mb-4">
-                      Use one bullet per line. This info will show on the service detail page.
-                    </p>
-
-                    {/* Benefits */}
-                    <div className="space-y-4">
+                    {service?.slug && (
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Benefits (English) — Why patients need this
-                        </label>
-                        <textarea
-                          rows={4}
-                          placeholder="Prevents cavities&#10;Fresh breath&#10;Saves money long-term"
-                          value={form.benefitsEn || ''}
-                          onChange={(e) => setForm({ ...form, benefitsEn: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        <label className={labelClassName}>Slug (URL)</label>
+                        <input
+                          type="text"
+                          disabled
+                          value={service.slug}
+                          className="h-10 sm:h-11 w-full rounded-xl border border-gray-200 bg-gray-100 px-3 sm:px-4 text-sm text-gray-500 outline-none font-mono"
                         />
-                        <p className="text-xs text-gray-400 mt-1">One benefit per line</p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Benefits (Myanmar)
-                        </label>
-                        <textarea
-                          rows={4}
-                          value={form.benefitsMm || ''}
-                          onChange={(e) => setForm({ ...form, benefitsMm: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
-                        />
-                      </div>
-
-                      {/* Process */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Our Process (English) — Step by step how you treat
-                        </label>
-                        <textarea
-                          rows={4}
-                          placeholder="Initial consultation&#10;Professional cleaning&#10;Polishing&#10;Aftercare advice"
-                          value={form.processEn || ''}
-                          onChange={(e) => setForm({ ...form, processEn: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
-                        />
-                        <p className="text-xs text-gray-400 mt-1">One step per line (will be numbered automatically)</p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Our Process (Myanmar)
-                        </label>
-                        <textarea
-                          rows={4}
-                          value={form.processMm || ''}
-                          onChange={(e) => setForm({ ...form, processMm: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
-                        />
-                      </div>
-
-                      {/* Aftercare */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Aftercare Tips (English)
-                        </label>
-                        <textarea
-                          rows={4}
-                          placeholder="Brush twice daily&#10;Floss regularly&#10;Avoid hard foods for 24 hours"
-                          value={form.aftercareEn || ''}
-                          onChange={(e) => setForm({ ...form, aftercareEn: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
-                        />
-                        <p className="text-xs text-gray-400 mt-1">One tip per line</p>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Aftercare Tips (Myanmar)
-                        </label>
-                        <textarea
-                          rows={4}
-                          value={form.aftercareMm || ''}
-                          onChange={(e) => setForm({ ...form, aftercareMm: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
-                        />
-                      </div>
-
-                      {/* FAQs */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          FAQs (English)
-                        </label>
-                        <textarea
-                          rows={6}
-                          placeholder="Q: Does it hurt?&#10;A: No, we use modern painless techniques.&#10;&#10;Q: How long does it take?&#10;A: About 30 minutes."
-                          value={form.faqsEn || ''}
-                          onChange={(e) => setForm({ ...form, faqsEn: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
-                        />
-                        <p className="text-xs text-gray-400 mt-1">
-                          Format: "Q: question" then "A: answer". Separate each FAQ with a blank line.
+                        <p className="mt-1 text-[11px] text-gray-400">
+                          Auto-generated from name
                         </p>
                       </div>
+                    )}
+                  </FormSection>
 
+                  {/* Short Description */}
+                  <FormSection
+                    icon={FileText}
+                    title="Short Description"
+                    description="Brief text shown on service cards"
+                  >
+                    <div>
+                      <label className={labelClassName}>
+                        Short Description (English){' '}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        required
+                        rows={2}
+                        maxLength={300}
+                        placeholder="Brief description for cards..."
+                        value={form.shortDescriptionEn || ''}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            shortDescriptionEn: e.target.value,
+                          })
+                        }
+                        className={textareaClassName}
+                      />
+                      <p className="mt-1 text-[11px] text-gray-400">
+                        {(form.shortDescriptionEn || '').length}/300 characters
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className={labelClassName}>
+                        Short Description (Myanmar)
+                      </label>
+                      <textarea
+                        rows={2}
+                        maxLength={300}
+                        value={form.shortDescriptionMm || ''}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            shortDescriptionMm: e.target.value,
+                          })
+                        }
+                        className={textareaClassName}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Full Description */}
+                  <FormSection
+                    icon={FileText}
+                    title="Full Description"
+                    description="Detailed content shown on service detail page"
+                  >
+                    <div>
+                      <label className={labelClassName}>
+                        Full Description (English)
+                      </label>
+                      <textarea
+                        rows={4}
+                        placeholder="Detailed description..."
+                        value={form.fullDescriptionEn || ''}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            fullDescriptionEn: e.target.value,
+                          })
+                        }
+                        className={textareaClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClassName}>
+                        Full Description (Myanmar)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={form.fullDescriptionMm || ''}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            fullDescriptionMm: e.target.value,
+                          })
+                        }
+                        className={textareaClassName}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Benefits */}
+                  <FormSection
+                    icon={Award}
+                    title="Benefits"
+                    description="Why patients need this service (one per line)"
+                  >
+                    <div>
+                      <label className={labelClassName}>
+                        Benefits (English)
+                      </label>
+                      <textarea
+                        rows={4}
+                        placeholder="Prevents cavities&#10;Fresh breath&#10;Saves money long-term"
+                        value={form.benefitsEn || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, benefitsEn: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClassName}>
+                        Benefits (Myanmar)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={form.benefitsMm || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, benefitsMm: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Process */}
+                  <FormSection
+                    icon={ListChecks}
+                    title="Process"
+                    description="Treatment steps (auto-numbered, one per line)"
+                  >
+                    <div>
+                      <label className={labelClassName}>
+                        Process (English)
+                      </label>
+                      <textarea
+                        rows={4}
+                        placeholder="Initial consultation&#10;Professional cleaning&#10;Polishing&#10;Aftercare advice"
+                        value={form.processEn || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, processEn: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClassName}>
+                        Process (Myanmar)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={form.processMm || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, processMm: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Aftercare */}
+                  <FormSection
+                    icon={Heart}
+                    title="Aftercare Tips"
+                    description="Post-treatment care instructions (one per line)"
+                  >
+                    <div>
+                      <label className={labelClassName}>
+                        Aftercare (English)
+                      </label>
+                      <textarea
+                        rows={4}
+                        placeholder="Brush twice daily&#10;Floss regularly&#10;Avoid hard foods for 24 hours"
+                        value={form.aftercareEn || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, aftercareEn: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClassName}>
+                        Aftercare (Myanmar)
+                      </label>
+                      <textarea
+                        rows={4}
+                        value={form.aftercareMm || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, aftercareMm: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* FAQs */}
+                  <FormSection
+                    icon={HelpCircle}
+                    title="FAQs"
+                    description="Format: 'Q: question' then 'A: answer'. Blank line between FAQs."
+                  >
+                    <div>
+                      <label className={labelClassName}>FAQs (English)</label>
+                      <textarea
+                        rows={6}
+                        placeholder="Q: Does it hurt?&#10;A: No, we use modern painless techniques.&#10;&#10;Q: How long does it take?&#10;A: About 30 minutes."
+                        value={form.faqsEn || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, faqsEn: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+
+                    <div>
+                      <label className={labelClassName}>FAQs (Myanmar)</label>
+                      <textarea
+                        rows={6}
+                        placeholder="မေး: နာကျင်ပါသလား?&#10;ဖြေ: မနာကျင်ပါ။"
+                        value={form.faqsMm || ''}
+                        onChange={(e) =>
+                          setForm({ ...form, faqsMm: e.target.value })
+                        }
+                        className={monoTextareaClassName}
+                      />
+                    </div>
+                  </FormSection>
+
+                  {/* Category & Icon */}
+                  <FormSection icon={Tag} title="Category & Icon">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          FAQs (Myanmar)
+                        <label className={labelClassName}>
+                          Category <span className="text-red-500">*</span>
                         </label>
-                        <textarea
-                          rows={6}
-                          placeholder="မေး: နာကျင်ပါသလား?&#10;ဖြေ: မနာကျင်ပါ။"
-                          value={form.faqsMm || ''}
-                          onChange={(e) => setForm({ ...form, faqsMm: e.target.value })}
-                          className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none resize-none font-mono text-sm"
+                        <select
+                          required
+                          value={form.category || 'GENERAL'}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              category: e.target.value as any,
+                            })
+                          }
+                          className={`${inputClassName} appearance-none cursor-pointer`}
+                        >
+                          {SERVICE_CATEGORIES.map((cat) => (
+                            <option key={cat.value} value={cat.value}>
+                              {cat.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className={labelClassName}>Icon</label>
+                        <select
+                          value={form.iconName || 'Stethoscope'}
+                          onChange={(e) =>
+                            setForm({ ...form, iconName: e.target.value })
+                          }
+                          className={`${inputClassName} appearance-none cursor-pointer`}
+                        >
+                          {ICON_OPTIONS.map((icon) => (
+                            <option key={icon.value} value={icon.value}>
+                              {icon.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                  </FormSection>
+
+                  {/* Price & Duration */}
+                  <FormSection icon={DollarSign} title="Pricing & Duration">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelClassName}>
+                          Price (MMK) <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="0"
+                          step="1000"
+                          value={form.startingPrice || 0}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              startingPrice: Number(e.target.value),
+                            })
+                          }
+                          className={inputClassName}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelClassName}>
+                          Duration (min) <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          required
+                          min="0"
+                          step="5"
+                          value={form.durationMinutes || 30}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              durationMinutes: Number(e.target.value),
+                            })
+                          }
+                          className={inputClassName}
                         />
                       </div>
                     </div>
-                  </div>
 
-                  {/* Category & Icon */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Category *
-                      </label>
-                      <select
-                        required
-                        value={form.category || 'GENERAL'}
-                        onChange={(e) => setForm({ ...form, category: e.target.value as any })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      >
-                        {SERVICE_CATEGORIES.map((cat) => (
-                          <option key={cat.value} value={cat.value}>
-                            {cat.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Icon
-                      </label>
-                      <select
-                        value={form.iconName || 'Stethoscope'}
-                        onChange={(e) => setForm({ ...form, iconName: e.target.value })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      >
-                        {ICON_OPTIONS.map((icon) => (
-                          <option key={icon.value} value={icon.value}>
-                            {icon.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Price & Duration */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Starting Price (MMK) *
-                      </label>
+                      <label className={labelClassName}>Display Order</label>
                       <input
                         type="number"
-                        required
                         min="0"
-                        step="1000"
-                        value={form.startingPrice || 0}
-                        onChange={(e) => setForm({ ...form, startingPrice: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
+                        value={form.displayOrder || 0}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            displayOrder: Number(e.target.value),
+                          })
+                        }
+                        className={inputClassName}
                       />
+                      <p className="mt-1 text-[11px] text-gray-500">
+                        Lower numbers appear first
+                      </p>
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Duration (minutes) *
-                      </label>
-                      <input
-                        type="number"
-                        required
-                        min="0"
-                        step="5"
-                        value={form.durationMinutes || 30}
-                        onChange={(e) => setForm({ ...form, durationMinutes: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                      />
-                    </div>
-                  </div>
+                  </FormSection>
 
-                  {/* Display Order */}
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Display Order
+                  {/* Visibility */}
+                  <FormSection icon={Sparkles} title="Visibility">
+                    <label className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors">
+                      <div className="relative shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={form.isActive || false}
+                          onChange={(e) =>
+                            setForm({ ...form, isActive: e.target.checked })
+                          }
+                          className="sr-only peer"
+                        />
+                        <div className="w-11 h-6 bg-gray-300 rounded-full peer-checked:bg-green-500 transition-colors" />
+                        <div className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-semibold text-gray-900">
+                          Active on Website
+                        </div>
+                        <div className="text-xs text-gray-500 mt-0.5">
+                          Show this service on public website
+                        </div>
+                      </div>
                     </label>
-                    <input
-                      type="number"
-                      min="0"
-                      value={form.displayOrder || 0}
-                      onChange={(e) => setForm({ ...form, displayOrder: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 outline-none"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">Lower numbers appear first</p>
-                  </div>
-
-                  {/* Active toggle */}
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="checkbox"
-                      id="isActive"
-                      checked={form.isActive || false}
-                      onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                      className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
-                    />
-                    <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
-                      Active (visible on website)
-                    </label>
-                  </div>
+                  </FormSection>
                 </div>
 
-                {/* Footer */}
-                <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-100">
+                {/* ============ STICKY FOOTER ============ */}
+                <div className="sticky bottom-0 flex items-center justify-end gap-2 px-4 py-3 sm:px-6 sm:py-4 border-t border-gray-100 bg-white shrink-0">
                   <button
                     type="button"
                     onClick={handleClose}
                     disabled={isSubmitting}
-                    className="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+                    className="px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors disabled:opacity-50"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="btn-primary flex items-center gap-2"
+                    className="flex-1 sm:flex-initial inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm shadow-green-500/20 transition-all duration-200 hover:bg-green-700 hover:shadow-md active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
-                    {isSubmitting 
-                      ? (imageFile ? 'Uploading & Saving...' : 'Saving...')
-                      : (service ? 'Update Service' : 'Create Service')
-                    }
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span className="truncate">
+                          {imageFile ? 'Uploading...' : 'Saving...'}
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        {service ? 'Update' : 'Create'}
+                      </>
+                    )}
                   </button>
                 </div>
               </form>
