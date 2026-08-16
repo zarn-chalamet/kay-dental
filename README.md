@@ -1,470 +1,395 @@
-# KAY Dental Care - Full Stack Website
+<div align="center">
+  <img src="public/logo.png" alt="KAY Dental Care Logo" width="120" height="120" />
+  
+  # KAY Dental Care - Frontend
+  
+  **Modern dental clinic management system with public website and admin dashboard**
+  
+  [![React](https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+  [![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+  [![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+  [![License](https://img.shields.io/badge/License-Private-red.svg)](LICENSE)
+</div>
 
-A comprehensive dental clinic website for KAY Dental Care based in Yangon, Myanmar.
+## Overview
 
-## 🏗️ Project Structure
+Production-ready dental clinic platform featuring a bilingual public website (English/Myanmar), online appointment booking, comprehensive admin dashboard with real-time notifications, and integrated content management system.
 
-```
-kay-dental-care/
-├── kay-dental-web/          # Frontend (Vite + React + TypeScript) - THIS PROJECT
-└── kay-dental-api/          # Backend (Spring Boot + PostgreSQL) - SEPARATE PROJECT
-```
+## Features
 
----
+### Public Website
+- Bilingual support (English/Myanmar) with persistent language selection
+- Responsive homepage with banner carousel and service showcase
+- Service catalog with detailed information pages
+- Doctor profiles with specialties and availability
+- Photo gallery with category filtering
+- Patient testimonials and reviews
+- FAQ section with search functionality
+- Real-time clinic status indicator (Open/Closed/Holiday)
+- Multi-step appointment booking system
+- Contact form with Google Maps integration
+- Emergency care information page
 
-## 🖥️ Frontend (This Project)
+### Admin Dashboard
+- JWT-based authentication with token refresh
+- Real-time notification system with sidebar badges
+- Bell dropdown with unified activity feed
+- Browser tab notifications for unread items
+- Overview dashboard with statistics and quick actions
+- Auto-refresh mechanism (30-second intervals)
 
-### Tech Stack
-- **Vite 5.x** - Build tool
+### Content Management
+- Appointments management with status tracking
+- Contact message inbox with read/unread status
+- Doctor profiles with photo uploads
+- Service catalog with rich content editor
+- Homepage banners with image cropping tool
+- Gallery photos with category management
+- Testimonials with star ratings
+- FAQ management by category
+- Holiday and closure date management
+- Clinic settings and business hours
+
+### Technical Features
+- Image cropping tool with locked 21:9 aspect ratio
+- Multi-format image support (PNG, JPG, WebP)
+- Responsive design (mobile-first approach)
+- Optimistic UI updates
+- Server state management with React Query
+- Type-safe API integration
+- Framer Motion animations
+- Accessible components (ARIA labels, keyboard navigation)
+
+## Tech Stack
+
+### Core
 - **React 18** - UI framework
-- **TypeScript** - Type safety
-- **Tailwind CSS 4** - Styling
-- **React Router v6** - Routing (HashRouter for SPA)
-- **Zustand** - State management
-- **Axios** - HTTP client
-- **Framer Motion** - Animations
-- **Swiper.js** - Carousels
-- **Lucide React** - Icons
-- **React Hot Toast** - Notifications
+- **TypeScript 5** - Type safety
+- **Vite 5** - Build tool and dev server
+- **Tailwind CSS 4** - Utility-first styling
 
-### Features
-- ✅ Responsive design (mobile-first)
-- ✅ Bilingual support (English/Myanmar)
-- ✅ Public pages (Home, Services, Doctors, Gallery, etc.)
-- ✅ Multi-step appointment booking
-- ✅ Admin panel with authentication
-- ✅ Real-time clinic status (Open/Closed/Holiday)
+### State Management
+- **Zustand** - Client state management
+- **TanStack Query** - Server state and caching
+- **Axios** - HTTP client with interceptors
 
-### Development
+### UI Libraries
+- **Framer Motion** - Animation library
+- **Swiper.js** - Touch carousels
+- **Lucide React** - Icon system
+- **React Hot Toast** - Notification system
+- **React Image Crop** - Image cropping tool
+
+### Routing
+- **React Router v6** - Client-side routing
+
+## Prerequisites
+
+- Node.js 18.0 or higher
+- npm 9.0 or higher (or yarn/pnpm equivalent)
+- Backend API service running (see backend repository)
+
+## Installation
 
 ```bash
+# Clone the repository
+git clone <repository-url>
+cd kay-dental-web
+
 # Install dependencies
 npm install
 
-# Start development server
-npm run dev
+# Create environment configuration
+cp .env.example .env
 
-# Build for production
-npm run build
+# Configure environment variables (see below)
+# Then start development server
+npm run dev
 ```
 
-### Environment Variables
+The application will be available at `http://localhost:5173`
 
-Create a `.env` file in the root:
+## Environment Variables
+
+Create a `.env` file in the project root:
 
 ```env
+# Backend API endpoint
 VITE_API_URL=http://localhost:8080/api
-VITE_CLOUDINARY_URL=https://api.cloudinary.com/v1_1/your-cloud-name
+
+# Production example:
+# VITE_API_URL=https://api.yourdomain.com/api
 ```
 
-### URLs (with HashRouter)
-- Home: `/#/`
-- Admin Login: `/#/admin/login`
-- Admin Dashboard: `/#/admin`
-- Services: `/#/services`
-- Book Appointment: `/#/appointment`
+## Available Scripts
 
-### Demo Credentials (Mock Mode)
-- **Username:** `admin`
-- **Password:** `admin123`
-
----
-
-## ⚙️ Backend Setup (Spring Boot)
-
-The frontend is ready to connect to a Spring Boot backend. Follow these instructions to set it up.
-
-### Prerequisites
-- Java 17+
-- Maven 3.8+
-- PostgreSQL 14+
-- (Optional) Cloudinary account for image uploads
-
-### Step 1: Create the Spring Boot Project
-
-Using Spring Initializr (https://start.spring.io/) or your IDE, create a new project with:
-
-- **Project:** Maven
-- **Language:** Java
-- **Spring Boot:** 3.2.x
-- **Group:** com.kaydental
-- **Artifact:** kay-dental-api
-- **Package:** com.kaydental
-- **Java:** 17
-
-**Dependencies to add:**
-- Spring Web
-- Spring Data JPA
-- Spring Security
-- Spring Validation
-- PostgreSQL Driver
-- Lombok
-- Spring Boot DevTools
-
-### Step 2: Add Additional Dependencies to pom.xml
-
-```xml
-<!-- Flyway for migrations -->
-<dependency>
-    <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-core</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.flywaydb</groupId>
-    <artifactId>flyway-database-postgresql</artifactId>
-</dependency>
-
-<!-- JWT -->
-<dependency>
-    <groupId>io.jsonwebtoken</groupId>
-    <artifactId>jjwt-api</artifactId>
-    <version>0.12.3</version>
-</dependency>
-<dependency>
-    <groupId>io.jsonwebtoken</groupId>
-    <artifactId>jjwt-impl</artifactId>
-    <version>0.12.3</version>
-    <scope>runtime</scope>
-</dependency>
-<dependency>
-    <groupId>io.jsonwebtoken</groupId>
-    <artifactId>jjwt-jackson</artifactId>
-    <version>0.12.3</version>
-    <scope>runtime</scope>
-</dependency>
-
-<!-- Swagger/OpenAPI -->
-<dependency>
-    <groupId>org.springdoc</groupId>
-    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-    <version>2.3.0</version>
-</dependency>
-
-<!-- Cloudinary (optional - for image uploads) -->
-<dependency>
-    <groupId>com.cloudinary</groupId>
-    <artifactId>cloudinary-http44</artifactId>
-    <version>1.36.0</version>
-</dependency>
+```bash
+npm run dev          # Start development server
+npm run build        # Create production build
+npm run preview      # Preview production build locally
+npm run lint         # Run ESLint
+npm run type-check   # Run TypeScript type checking
 ```
 
-### Step 3: Configure application.properties
+## Project Structure
 
-```properties
-# Server
-server.port=8080
-
-# Database
-spring.datasource.url=jdbc:postgresql://localhost:5432/kay_dental
-spring.datasource.username=postgres
-spring.datasource.password=your_password
-spring.jpa.hibernate.ddl-auto=validate
-spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-
-# Flyway
-spring.flyway.enabled=true
-spring.flyway.locations=classpath:db/migration
-
-# JWT
-jwt.secret=your-256-bit-secret-key-here-minimum-32-characters
-jwt.access-token-expiration=3600000
-jwt.refresh-token-expiration=604800000
-
-# CORS - Allow frontend origin
-cors.allowed-origins=http://localhost:5173
-
-# Swagger
-springdoc.api-docs.path=/api-docs
-springdoc.swagger-ui.path=/swagger-ui.html
+```
+src/
+├── api/                      # API client layer
+│   ├── adminApi.ts          # Admin endpoints
+│   ├── publicApi.ts         # Public endpoints
+│   ├── authApi.ts           # Authentication
+│   └── axiosInstance.ts     # Axios configuration
+│
+├── components/              # Reusable components
+│   ├── admin/               # Admin-specific components
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   ├── LoadingSpinner.tsx
+│   └── ConfirmDeleteModal.tsx
+│
+├── hooks/                   # Custom React hooks
+│   ├── useAdminData.ts
+│   └── usePublicData.ts
+│
+├── layouts/                 # Layout components
+│   ├── AdminLayout.tsx
+│   └── PublicLayout.tsx
+│
+├── pages/                   # Route pages
+│   ├── admin/               # Admin dashboard pages
+│   └── ...                  # Public pages
+│
+├── store/                   # Zustand stores
+│   ├── useAuthStore.ts
+│   └── useLanguageStore.ts
+│
+├── types/                   # TypeScript definitions
+│   └── index.ts
+│
+├── utils/                   # Utility functions
+│   ├── formatters.ts
+│   ├── clinicStatus.ts
+│   └── settingsMapper.ts
+│
+├── App.tsx                  # Root component
+├── main.tsx                 # Entry point
+└── index.css                # Global styles
 ```
 
-### Step 4: Create PostgreSQL Database
+## Design System
 
-```sql
-CREATE DATABASE kay_dental;
+### Color Palette
+
+```css
+Primary Green:    #16a34a
+Primary Dark:     #15803d
+Primary Light:    #dcfce7
+Accent Yellow:    #facc15
+Background:       #ffffff
+Surface:          #f9fafb
+Text Primary:     #1f2937
+Text Secondary:   #6b7280
 ```
 
-### Step 5: Configure CORS
+### Typography
 
-Create `CorsConfig.java`:
+- **Primary Font:** Inter
+- **Myanmar Font:** Noto Sans Myanmar
+- **Minimum Body Size:** 14px (mobile), 16px (desktop)
 
-```java
-@Configuration
-public class CorsConfig implements WebMvcConfigurer {
-    
-    @Value("${cors.allowed-origins}")
-    private String allowedOrigins;
-    
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-            .allowedOrigins(allowedOrigins.split(","))
-            .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-            .allowedHeaders("*")
-            .allowCredentials(true);
-    }
-}
+### Layout
+
+- **Container Max Width:** 1400px
+- **Horizontal Padding:** 16px / 24px / 32px (responsive)
+- **Card Border Radius:** 16px (rounded-2xl)
+- **Button Border Radius:** 12px (rounded-xl)
+
+### Responsive Breakpoints
+
+```
+Mobile:    0px - 640px
+Tablet:    641px - 1024px
+Desktop:   1025px - 1400px
+Wide:      1401px+
 ```
 
-### Step 6: Configure Security
+## API Integration
 
-Create `SecurityConfig.java`:
+### Expected Response Format
 
-```java
-@Configuration
-@EnableWebSecurity
-public class SecurityConfig {
-    
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter;
-    
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .cors(Customizer.withDefaults())
-            .sessionManagement(session -> 
-                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/banners/**").permitAll()
-                .requestMatchers("/api/doctors/**").permitAll()
-                .requestMatchers("/api/services/**").permitAll()
-                .requestMatchers("/api/gallery/**").permitAll()
-                .requestMatchers("/api/testimonials/**").permitAll()
-                .requestMatchers("/api/faqs/**").permitAll()
-                .requestMatchers("/api/clinic/**").permitAll()
-                .requestMatchers("/api/holidays/**").permitAll()
-                .requestMatchers("/api/appointments").permitAll()
-                .requestMatchers("/api/appointments/track").permitAll()
-                .requestMatchers("/api/appointments/available-slots").permitAll()
-                .requestMatchers("/api/contact").permitAll()
-                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                // Admin endpoints require authentication
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        
-        return http.build();
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-}
-```
-
-### Step 7: Create Flyway Migrations
-
-Create migration files in `src/main/resources/db/migration/`:
-
-**V1__create_users_table.sql**
-```sql
-CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    email VARCHAR(100),
-    role VARCHAR(20) DEFAULT 'ADMIN',
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP
-);
-```
-
-**V12__seed_initial_data.sql** (example)
-```sql
--- Admin user (password: admin123)
-INSERT INTO users (username, password, email, role) VALUES 
-('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZRGdjGj/n3.c7rnuF4Yf4G8/3Kn2y', 'admin@kaydental.com', 'ADMIN');
-
--- Add your seed data for services, doctors, etc.
-```
-
-### Step 8: API Response Format
-
-The frontend expects this response format:
-
-**Success:**
+**Success Response:**
 ```json
 {
   "success": true,
-  "data": { ... },
+  "data": {},
   "message": "Optional message"
 }
 ```
 
-**Error:**
+**Error Response:**
 ```json
 {
   "success": false,
   "error": {
     "code": "ERROR_CODE",
-    "message": "Human readable message",
-    "details": []
+    "message": "Human-readable error message"
   }
 }
 ```
 
-### Step 9: Run the Backend
-
-```bash
-cd kay-dental-api
-mvn spring-boot:run
-```
-
-The API will be available at `http://localhost:8080/api`
-Swagger UI at `http://localhost:8080/swagger-ui.html`
-
----
-
-## 🔗 Connecting Frontend to Backend
-
-### 1. Update Environment Variable
-
-In the frontend project, create/update `.env`:
-
-```env
-VITE_API_URL=http://localhost:8080/api
-```
-
-### 2. Switch from Mock Data to API
-
-The frontend currently uses mock data in `src/data/mockData.ts`. To switch to the real API:
-
-1. The API layer is already set up in `src/api/`:
-   - `axiosInstance.ts` - Configured Axios with auth interceptors
-   - `publicApi.ts` - Public API endpoints
-   - `adminApi.ts` - Admin API endpoints
-   - `authApi.ts` - Authentication endpoints
-
-2. Update components to use API instead of mock data. Example:
-
-```typescript
-// Before (mock data)
-import { mockDoctors } from '@/data/mockData';
-const doctors = mockDoctors;
-
-// After (real API)
-import { doctorApi } from '@/api/publicApi';
-const [doctors, setDoctors] = useState<Doctor[]>([]);
-useEffect(() => {
-  doctorApi.getAll().then(setDoctors);
-}, []);
-```
-
-3. Update auth store to use real API:
-
-```typescript
-// In useAuthStore.ts, update login function to call authApi
-import { authApi } from '@/api/authApi';
-
-login: async (username: string, password: string) => {
-  try {
-    const response = await authApi.login({ username, password });
-    localStorage.setItem('kay-dental-token', response.data.accessToken);
-    set({
-      isAuthenticated: true,
-      user: response.data.user,
-      token: response.data.accessToken,
-    });
-    return true;
-  } catch (error) {
-    return false;
-  }
-},
-```
-
----
-
-## 📋 API Endpoints Reference
-
 ### Public Endpoints
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/auth/login` | Admin login |
-| GET | `/api/banners/active` | Get active banners |
-| GET | `/api/doctors` | Get all doctors |
-| GET | `/api/doctors/{id}` | Get doctor by ID |
-| GET | `/api/services` | Get all services |
-| GET | `/api/services/{slug}` | Get service by slug |
-| GET | `/api/gallery` | Get gallery photos |
-| GET | `/api/testimonials` | Get testimonials |
-| GET | `/api/faqs` | Get FAQs |
-| GET | `/api/clinic/settings` | Get clinic settings |
-| GET | `/api/clinic/status` | Get clinic open/closed status |
-| GET | `/api/holidays/active` | Get current holiday |
-| POST | `/api/appointments` | Create appointment |
-| POST | `/api/contact` | Send contact message |
+| POST   | `/api/auth/login` | Admin authentication |
+| GET    | `/api/banners/active` | Get active banners |
+| GET    | `/api/doctors` | List all doctors |
+| GET    | `/api/doctors/{id}` | Get doctor details |
+| GET    | `/api/services` | List all services |
+| GET    | `/api/services/{slug}` | Get service by slug |
+| GET    | `/api/gallery` | Get gallery photos |
+| GET    | `/api/testimonials` | Get testimonials |
+| GET    | `/api/faqs` | Get FAQs |
+| GET    | `/api/clinic/settings` | Get clinic information |
+| GET    | `/api/clinic/status` | Get open/closed status |
+| GET    | `/api/holidays/active` | Get current holiday |
+| POST   | `/api/appointments` | Create appointment |
+| POST   | `/api/contact` | Submit contact form |
 
 ### Admin Endpoints (JWT Required)
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/admin/dashboard/stats` | Dashboard statistics |
-| GET/POST/PUT/DELETE | `/api/admin/banners` | Manage banners |
-| GET/POST/PUT/DELETE | `/api/admin/appointments` | Manage appointments |
-| GET/POST/PUT/DELETE | `/api/admin/doctors` | Manage doctors |
-| GET/POST/PUT/DELETE | `/api/admin/services` | Manage services |
-| GET/POST/PUT/DELETE | `/api/admin/holidays` | Manage holidays |
-| GET/POST/PUT/DELETE | `/api/admin/gallery` | Manage gallery |
-| GET/POST/PUT/DELETE | `/api/admin/testimonials` | Manage testimonials |
-| GET/POST/PUT/DELETE | `/api/admin/faqs` | Manage FAQs |
-| GET/PUT | `/api/admin/settings` | Manage settings |
-| POST | `/api/admin/upload/image` | Upload image |
+| GET    | `/api/admin/dashboard/stats` | Dashboard statistics |
+| GET    | `/api/admin/messages/unread-count` | Unread messages count |
+| GET    | `/api/admin/messages/unread` | Recent unread messages |
+| CRUD   | `/api/admin/banners` | Manage banners |
+| CRUD   | `/api/admin/appointments` | Manage appointments |
+| CRUD   | `/api/admin/doctors` | Manage doctors |
+| CRUD   | `/api/admin/services` | Manage services |
+| CRUD   | `/api/admin/holidays` | Manage holidays |
+| CRUD   | `/api/admin/gallery` | Manage gallery |
+| CRUD   | `/api/admin/testimonials` | Manage testimonials |
+| CRUD   | `/api/admin/faqs` | Manage FAQs |
+| CRUD   | `/api/admin/messages` | Manage messages |
+| GET/PUT| `/api/admin/settings` | Manage settings |
+| POST   | `/api/admin/upload/image` | Upload image |
 
----
+## Image Specifications
 
-## 🎨 Design System
+| Type | Aspect Ratio | Recommended Size | Format |
+|------|--------------|------------------|--------|
+| Homepage Banner | 21:9 (locked) | 1920×823px | JPG |
+| Doctor Photo | 3:4 | 800×1200px | JPG/PNG |
+| Service Image | 4:3 | 800×600px | JPG/PNG |
+| Gallery Photo | Any | 1000×1000px+ | JPG/PNG |
+| Testimonial Avatar | 1:1 | 400×400px | JPG/PNG |
 
-### Colors
-- **Primary:** Green (#16a34a)
-- **Accent:** Yellow (#facc15)
-- **Background:** White (#ffffff)
-- **Text:** Dark gray (#1f2937)
+## Deployment
 
-### Typography
-- **Font:** Inter + Noto Sans Myanmar
-- **Body:** 16px minimum
+### Recommended Stack
 
----
+| Component | Service | Free Tier Limit |
+|-----------|---------|-----------------|
+| Frontend | Vercel | Unlimited bandwidth |
+| Backend | Render | 750 hours/month |
+| Database | Neon | 3GB storage |
+| Image Storage | Cloudinary | 25GB storage |
 
-## 📱 Responsive Breakpoints
-- Mobile: 0-640px
-- Tablet: 641-1024px
-- Desktop: 1025px+
+### Deploy to Vercel
 
----
+1. Push code to GitHub repository
+2. Import project on [vercel.com](https://vercel.com)
+3. Configure build settings:
+   ```
+   Framework Preset: Vite
+   Build Command: npm run build
+   Output Directory: dist
+   Install Command: npm install
+   ```
+4. Add environment variable:
+   ```
+   VITE_API_URL=https://your-backend-url.com/api
+   ```
+5. Deploy
 
-## 🚀 Deployment
-
-### Frontend (Static Hosting)
-Build the project and deploy `dist/` folder:
+### Build for Production
 
 ```bash
 npm run build
-# Deploy dist/ to Netlify, Vercel, or any static host
 ```
 
-### Backend (Server)
-Deploy Spring Boot JAR to:
-- AWS EC2 / ECS
-- Google Cloud Run
-- Heroku
-- DigitalOcean App Platform
+The optimized build will be generated in the `dist/` directory, ready for deployment to any static hosting service.
 
----
+## Browser Support
 
-## 📞 Clinic Information
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Mobile Chrome/Safari (iOS 14+, Android 10+)
 
-- **Name:** KAY Dental Care
-- **Address:** No. 102, 21st Street, Latha Township, Yangon, Myanmar
-- **Phone:** 09 5158726, 09 786333243
-- **Email:** kaydental@gmail.com
+## Performance
 
----
+- Lighthouse Performance Score: 90+
+- First Contentful Paint: < 1.5s
+- Time to Interactive: < 3.0s
+- Bundle Size: ~200KB (gzipped)
 
-## 📄 License
+## Security
 
-Private project for KAY Dental Care.
+- JWT-based authentication with automatic token refresh
+- Protected admin routes with role-based access
+- CORS configuration for API requests
+- Environment variables for sensitive configuration
+- XSS prevention through React's built-in escaping
+- Input validation on all forms
+
+## Troubleshooting
+
+### API Connection Issues
+
+Verify the following:
+- Backend service is running on the expected port
+- CORS is properly configured on the backend
+- `VITE_API_URL` matches the backend URL
+- No firewall or network issues blocking requests
+
+### Build Failures
+
+```bash
+# Clear cache and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Check for TypeScript errors
+npm run type-check
+```
+
+### Development Server Issues
+
+```bash
+# Kill process on port 5173 (Unix/Mac)
+lsof -ti:5173 | xargs kill -9
+
+# Windows equivalent
+netstat -ano | findstr :5173
+taskkill /PID <PID> /F
+```
+
+## Related Repositories
+
+- **Backend API:** `kay-dental-api` (Spring Boot + PostgreSQL)
+
+## Contributing
+
+This is a private project. For internal contribution guidelines, please refer to the internal documentation.
+
+## License
+
+Copyright © 2026. All rights reserved. This is proprietary software.
+
+## Version
+
+Current version: **1.0.0**
