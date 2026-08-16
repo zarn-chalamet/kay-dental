@@ -46,9 +46,13 @@ export default function Footer() {
           {/* ============ BRAND + CTA (5 cols) ============ */}
           <div className="md:col-span-5">
             <Link to="/" className="inline-flex items-center gap-2.5 group">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white font-bold text-xl shadow-sm">
-                K
-              </div>
+              <img 
+                src="/logo.png" 
+                alt="KAY Dental Care" 
+                className="h-14 w-14 object-contain group-hover:scale-105 transition-transform"
+                width={56}
+                height={56}
+              />
               <div>
                 <div className="text-lg font-bold text-gray-900 leading-none">
                   KAY Dental

@@ -141,9 +141,13 @@ export default function AdminLayout() {
         {/* Brand */}
         <div className="flex items-center justify-between h-16 px-5 border-b border-gray-100 shrink-0">
           <Link to="/admin" className="flex items-center gap-2.5 group">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-700 text-white font-bold text-sm shadow-sm shadow-green-500/25 group-hover:scale-105 transition-transform">
-              K
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="KAY Admin" 
+              className="h-11 w-11 object-contain group-hover:scale-105 transition-transform"
+              width={44}
+              height={44}
+            />
             <div>
               <div className="text-sm font-bold text-gray-900 leading-none">
                 KAY Admin

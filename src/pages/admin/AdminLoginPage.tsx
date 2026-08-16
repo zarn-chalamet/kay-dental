@@ -68,9 +68,15 @@ export default function AdminLoginPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.5 }}
-              className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-green-700 text-white font-bold text-2xl shadow-lg shadow-green-500/25"
+              className="mx-auto mb-6 flex h-24 w-24 items-center justify-center"
             >
-              K
+              <img 
+                src="/logo.png" 
+                alt="KAY Dental Care" 
+                className="w-full h-full object-contain"
+                width={80}
+                height={80}
+              />
             </motion.div>
 
             <div className="inline-flex items-center gap-2 rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-green-700 mb-4">

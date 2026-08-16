@@ -63,9 +63,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-20 gap-2">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group shrink-0">
-            <div className="w-10 h-10 rounded-xl gradient-green flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
-              K
-            </div>
+            <img 
+              src="/logo.png" 
+              alt="KAY Dental Care" 
+              className="w-12 h-12 object-contain group-hover:scale-105 transition-transform"
+              width={48}
+              height={48}
+            />
             <div className="hidden sm:block">
               <div className="font-bold text-primary-700 text-lg leading-tight whitespace-nowrap">
                 KAY Dental
