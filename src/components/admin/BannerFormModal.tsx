@@ -18,6 +18,7 @@ import { adminBannerApi, uploadApi } from '@/api/adminApi';
 import { useQueryClient } from '@tanstack/react-query';
 import type { Banner } from '@/types';
 import toast from 'react-hot-toast';
+import BannerImageCropper from './BannerImageCropper';
 
 interface BannerFormModalProps {
   isOpen: boolean;
@@ -32,7 +33,6 @@ const BANNER_TYPES = [
   { value: 'HOLIDAY', label: '🎉 Holiday' },
 ];
 
-// Reusable classes
 const inputClassName =
   'h-10 sm:h-11 w-full rounded-xl border border-gray-200 bg-gray-50 px-3 sm:px-4 text-sm text-gray-900 placeholder:text-gray-400 transition-all focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20';
 
@@ -41,7 +41,6 @@ const textareaClassName =
 
 const labelClassName = 'block mb-1.5 text-sm font-semibold text-gray-700';
 
-// Section component
 function FormSection({
   icon: Icon,
   title,
@@ -73,7 +72,6 @@ function FormSection({
   );
 }
 
-// Helper to convert date
 const formatDateForInput = (date: unknown): string => {
   if (!date) return '';
   if (typeof date === 'string') return date.split('T')[0];
@@ -109,6 +107,8 @@ export default function BannerFormModal({
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
+  const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
   const [form, setForm] = useState<Partial<Banner>>(DEFAULT_FORM);
 
   useEffect(() => {
@@ -127,7 +127,6 @@ export default function BannerFormModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Validate dates
     if (form.startDate && form.endDate) {
       const start = new Date(form.startDate);
       const end = new Date(form.endDate);
@@ -188,11 +187,38 @@ export default function BannerFormModal({
     }
   };
 
+  // NEW: Handle image selection - opens cropper
   const handleImageChange = (file: File | null) => {
-    setImageFile(file);
     if (!file) {
+      setImageFile(null);
       setForm({ ...form, imageUrl: '' });
+      return;
     }
+
+    // Open cropper instead of setting file directly
+    setPendingImageFile(file);
+    setIsCropperOpen(true);
+  };
+
+  // NEW: Handle crop complete
+  const handleCropComplete = (croppedFile: File) => {
+    setImageFile(croppedFile);
+
+    // Show preview of cropped image
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setForm({ ...form, imageUrl: e.target?.result as string });
+    };
+    reader.readAsDataURL(croppedFile);
+
+    setIsCropperOpen(false);
+    setPendingImageFile(null);
+  };
+
+  // NEW: Handle crop cancel
+  const handleCropCancel = () => {
+    setIsCropperOpen(false);
+    setPendingImageFile(null);
   };
 
   const handleClose = () => {
@@ -290,9 +316,15 @@ export default function BannerFormModal({
                       onChange={handleImageChange}
                       label=""
                     />
-                    <p className="text-[11px] text-gray-500">
-                      Recommended size: 1920x600px for best display
-                    </p>
+                    <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
+                      <div className="flex items-start gap-2">
+                        <Info className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                        <div className="text-[11px] text-blue-800 space-y-0.5">
+                          <p><strong>📐 Auto-crop enabled:</strong> Any image will be cropped to 16:9 for perfect banner fit</p>
+                          <p><strong>📁 Recommended:</strong> High-quality photos, at least 1920x1080</p>
+                        </div>
+                      </div>
+                    </div>
                   </FormSection>
 
                   {/* Title */}
@@ -489,7 +521,6 @@ export default function BannerFormModal({
                       </div>
                     </div>
 
-                    {/* Schedule Preview */}
                     {form.startDate && form.endDate && (
                       <div className="rounded-xl bg-blue-50 border border-blue-100 p-3">
                         <div className="flex items-start gap-2">
@@ -583,6 +614,14 @@ export default function BannerFormModal({
               </form>
             </div>
           </motion.div>
+
+          {/* ============ IMAGE CROPPER ============ */}
+          <BannerImageCropper
+            isOpen={isCropperOpen}
+            imageFile={pendingImageFile}
+            onClose={handleCropCancel}
+            onCropComplete={handleCropComplete}
+          />
         </>
       )}
     </AnimatePresence>
